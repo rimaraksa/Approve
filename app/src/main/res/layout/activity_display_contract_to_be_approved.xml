@@ -1,0 +1,124 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
+    android:layout_height="match_parent" android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    tools:context="com.example.rimaraksa.approve.Activity.DisplayContractToBeApprovedActivity">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:text="From: "
+        android:id="@+id/TVFromOrTo"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:text="Small Text"
+        android:id="@+id/TVFromWaiting"
+        android:layout_alignTop="@+id/TVFromOrTo"
+        android:layout_toRightOf="@+id/TVFromOrTo"
+        android:layout_toEndOf="@+id/TVFromOrTo" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:text="Subject: "
+        android:id="@+id/textView15"
+        android:layout_below="@+id/TVFromOrTo"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:text="Small Text"
+        android:id="@+id/TVSubjectWaiting"
+        android:layout_below="@+id/TVFromWaiting"
+        android:layout_toRightOf="@+id/textView15"
+        android:layout_toEndOf="@+id/textView15" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="Medium Text"
+        android:id="@+id/TVBodyWaiting"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:layout_above="@+id/BReject"
+        android:layout_below="@+id/textView20" />
+
+    <Button
+        style="?android:attr/buttonStyleSmall"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Reject"
+        android:id="@+id/BReject"
+        android:layout_alignParentBottom="true"
+        android:layout_toLeftOf="@+id/BApprove"
+        android:layout_toStartOf="@+id/BApprove"
+        android:onClick="onReject" />
+
+    <Button
+        style="?android:attr/buttonStyleSmall"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Approve"
+        android:id="@+id/BApprove"
+        android:layout_alignTop="@+id/BReject"
+        android:layout_alignRight="@+id/TVBodyWaiting"
+        android:layout_alignEnd="@+id/TVBodyWaiting"
+        android:onClick="onApprove" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:text="Received: "
+        android:id="@+id/TVSentOrReceived"
+        android:layout_below="@+id/textView15"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:text="Small Text"
+        android:id="@+id/TVDateWaiting"
+        android:layout_below="@+id/TVSubjectWaiting"
+        android:layout_toRightOf="@+id/TVSentOrReceived"
+        android:layout_toEndOf="@+id/TVSentOrReceived" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:text="Domicile: "
+        android:id="@+id/textView20"
+        android:layout_below="@+id/TVSentOrReceived"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:text="Small Text"
+        android:id="@+id/TVLocation"
+        android:layout_alignTop="@+id/textView20"
+        android:layout_toRightOf="@+id/TVSentOrReceived"
+        android:layout_toEndOf="@+id/TVSentOrReceived" />
+
+</RelativeLayout>

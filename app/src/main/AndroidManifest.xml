@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.example.rimaraksa.approve" >
+
+    <!-- internet permission -->
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
+    <uses-permission android:name="android.permission.SET_DEBUG_APP" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.CAMERA" />
+
+    <uses-feature android:name="android.hardware.camera" />
+
+    <application
+        android:allowBackup="true"
+        android:icon="@drawable/ic_launcher"
+        android:label="@string/app_name"
+        android:theme="@style/AppTheme" >
+        <meta-data
+            android:name="com.google.android.gms.version"
+            android:value="@integer/google_play_services_version" />
+
+        <activity
+            android:name=".Activity.LoginActivity"
+            android:label="@string/app_name" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".Activity.DisplayActivity"
+            android:label="@string/title_activity_display" >
+        </activity>
+        <activity android:name=".Activity.SignupActivity" >
+        </activity>
+        <activity
+            android:name=".Unused.CreateContractActivity"
+            android:label="@string/title_activity_create_contract" >
+        </activity>
+        <activity
+            android:name=".Activity.DisplayContractListActivity"
+            android:label="@string/title_activity_display_contract_list" >
+        </activity>
+        <activity
+            android:name=".Activity.DisplayContractToBeApprovedActivity"
+            android:label="@string/title_activity_display_contract_to_be_approved" >
+        </activity>
+        <activity
+            android:name=".Activity.RejectContractActivity"
+            android:label="@string/title_activity_reject_contract" >
+        </activity>
+        <activity
+            android:name=".Activity.DisplaySentContractActivity"
+            android:label="@string/title_activity_display_sent_contract" >
+        </activity>
+        <activity
+            android:name=".Activity.DisplayApprovedContractActivity"
+            android:label="@string/title_activity_display_approved_contract" >
+        </activity>
+        <activity
+            android:name=".Activity.DisplayRejectedContractActivity"
+            android:label="@string/title_activity_display_rejected_contract" >
+        </activity>
+        <activity
+            android:name=".Activity.PlayVideoActivity"
+            android:label="@string/title_activity_play_video" >
+        </activity>
+
+        <service android:name=".Unused.SpeechService" />
+
+        <activity
+            android:name=".Activity.VerifySignatureActivity"
+            android:label="@string/title_activity_verify_signature" >
+        </activity>
+    </application>
+
+</manifest>

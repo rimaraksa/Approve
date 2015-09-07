@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">Approve</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">Settings</string>
+    <string name="title_activity_display">DisplayActivity</string>
+    <string name="emptyString"></string>
+    <string name="title_activity_create_contract">CreateContractActivity</string>
+    <string name="emptyStringContractBody"></string>
+    <string name="title_activity_display_contract_list">DisplayContractList</string>
+    <string name="title_activity_display_contract_to_be_approved">DisplayContractToBeApprovedActivity</string>
+    <string name="title_activity_approve">ApproveActivity</string>
+    <string name="title_activity_reject_contract">RejectContractActivity</string>
+    <string name="title_activity_display_sent_contract">DisplaySentContractActivity</string>
+    <string name="title_activity_display_approved_contract">DisplayApprovedContractActivity</string>
+    <string name="title_activity_display_rejected_contract">DisplayRejectedContractActivity</string>
+    <string name="title_activity_play_video">PlayVideoActivity</string>
+
+    <!-- TEST -->
+
+    <string name="action_search">Search</string>
+    <string name="drawer_open">Open</string>
+    <string name="drawer_close">Close</string>
+    <!-- Nav Drawer Menu Items -->
+    <string-array name="nav_drawer_items">
+        <item>Profile</item>
+        <item>Compose contract</item>
+        <item>Inbox</item>
+        <item>Waiting Inbox</item>
+        <item>Approved Inbox</item>
+        <item>Rejected Inbox</item>
+        <item>Outbox</item>
+        <item>Waiting Outbox</item>
+        <item>Approved Outbox</item>
+        <item>Rejected Outbox</item>
+    </string-array>
+
+    <!-- Nav Drawer List Item Icons -->
+    <!-- Keep them in order as the titles are in -->
+    <array name="nav_drawer_icons">
+        <item>@drawable/ic_profile</item>
+        <item>@drawable/ic_action_write</item>
+        <item>@drawable/ic_waiting</item>
+        <item>@drawable/ic_approved</item>
+        <item>@drawable/ic_rejected</item>
+        <item>@drawable/ic_waiting</item>
+        <item>@drawable/ic_approved</item>
+        <item>@drawable/ic_rejected</item>
+    </array>
+
+    <!-- Content Description -->
+    <string name="desc_list_item_icon">Item Icon</string>
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="title_activity_camera">CameraActivity</string>
+    <string name="title_activity_record">RecordActivity</string>
+    <string name="title_activity_verify_signature">VerifySignatureActivity</string>
+
+</resources>
