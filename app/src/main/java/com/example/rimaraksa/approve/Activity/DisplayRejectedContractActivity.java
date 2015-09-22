@@ -1,13 +1,19 @@
 package com.example.rimaraksa.approve.Activity;
 
+import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.Typeface;
+import android.support.v4.app.NavUtils;
+import android.support.v4.app.TaskStackBuilder;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.rimaraksa.approve.Global;
-import com.example.rimaraksa.approve.Model.Account;
 import com.example.rimaraksa.approve.Model.Contract;
 import com.example.rimaraksa.approve.R;
 
@@ -15,43 +21,65 @@ import java.io.IOException;
 
 
 public class DisplayRejectedContractActivity extends ActionBarActivity {
-    private Account account;
+    private Toolbar mToolbar;
+
     private Contract contract;
-    private String role;
+    private String role, senderName, receiverName, box;
+    private Bitmap senderProfpic;
+
+    private ImageView ivProfileSender;
+    private TextView tvSenderName, tvSenderUsername, tvReceiver, tvSubject, tvBody, tvRequestedDate, tvRejectedDate, tvLocation, tvReasonForRejection;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_display_rejected_contract);
 
-        account = (Account) getIntent().getSerializableExtra("Account");
+        mToolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(mToolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
         contract = (Contract) getIntent().getSerializableExtra("Contract");
         role = getIntent().getStringExtra("Role");
 
-        TextView tvFromOrTo = (TextView) findViewById(R.id.TVFromOrTo);
-        TextView tvToWaiting = (TextView) findViewById(R.id.TVToWaiting);
-        TextView tvSubjectWaiting = (TextView) findViewById(R.id.TVSubjectWaiting);
-        TextView tvBodyWaiting = (TextView) findViewById(R.id.TVBodyWaiting);
-        TextView tvSentOrReceived = (TextView) findViewById(R.id.TVSentOrReceived);
-        TextView tvDate = (TextView) findViewById(R.id.TVDate);
-        TextView tvDateRejected = (TextView) findViewById(R.id.TVDateRejected);
-        TextView tvReasonForRejection = (TextView) findViewById(R.id.TVReasonForRejection);
-        TextView tvLocation = (TextView) findViewById(R.id.TVLocation);
+        contract = (Contract) getIntent().getSerializableExtra("Contract");
 
-        tvFromOrTo.setText("To: ");
-        tvSentOrReceived.setText("Sent: ");
+        ivProfileSender = (ImageView) findViewById(R.id.IVProfileSender);
+        tvSenderName = (TextView) findViewById(R.id.TVSenderName);
+        tvSenderUsername = (TextView) findViewById(R.id.TVSenderUsername);
+        tvReceiver = (TextView) findViewById(R.id.TVReceiver);
+        tvSubject = (TextView) findViewById(R.id.TVSubject);
+        tvBody = (TextView) findViewById(R.id.TVBody);
+        tvRequestedDate = (TextView) findViewById(R.id.TVRequestedDate);
+        tvRejectedDate = (TextView) findViewById(R.id.TVRejectedDate);
+        tvLocation = (TextView) findViewById(R.id.TVLocation);
+        tvReasonForRejection = (TextView) findViewById(R.id.TVReasonForRejection);
 
-        if(role.equals("receiver")){
-            tvFromOrTo.setText("From: ");
-            tvSentOrReceived.setText("Received: ");
+        if(role.equals("sender")){
+            senderName = Global.account.getName();
+            senderProfpic = Global.accountProfpicBitmap;
+            receiverName = (String) getIntent().getExtras().getString("TargetName");
+            box = "Outbox";
+        }
+        else{
+            senderName = (String) getIntent().getExtras().getString("TargetName");
+            senderProfpic = (Bitmap) getIntent().getParcelableExtra("TargetProfpic");
+            receiverName = Global.account.getName();
+            box = "Inbox";
         }
 
-        tvToWaiting.setText(contract.getReceiver());
-        tvSubjectWaiting.setText(contract.getSubject());
-        tvBodyWaiting.setText(contract.getBody());
-        tvDate.setText(contract.getDateRequest());
-        tvDateRejected.setText(contract.getDateAppOrReject());
+        getSupportActionBar().setTitle("Rejected " + box);
+
+        ivProfileSender.setImageBitmap(senderProfpic);
+        tvSenderName.setText(senderName);
+        tvSenderUsername.setText(contract.getSender());
+        tvReceiver.setText(receiverName + " [" + contract.getReceiver() + "]");
+        tvSubject.setText(contract.getSubject() + " [Rejected]");
+        tvBody.setText(contract.getBody());
+        tvRequestedDate.setText(Global.getTimeDetailToDisplayFromDateTime(contract.getDateRequest()));
+        tvRejectedDate.setText(Global.getTimeDetailToDisplayFromDateTime(contract.getDateAppOrReject()));
         tvReasonForRejection.setText(contract.getReasonForRejection());
+
 
         try {
             tvLocation.setText(Global.latLongToCity(DisplayRejectedContractActivity.this, contract.getLocation()));
@@ -60,6 +88,11 @@ public class DisplayRejectedContractActivity extends ActionBarActivity {
             e.printStackTrace();
             tvLocation.setText("Unknown");
         }
+
+        String fontPath = "fonts/Coquette Bold.ttf";
+        TextView tvLogo = (TextView) findViewById(R.id.TVLogo);
+        Typeface typeface = Typeface.createFromAsset(getAssets(), fontPath);
+        tvLogo.setTypeface(typeface);
     }
 
 
@@ -72,16 +105,36 @@ public class DisplayRejectedContractActivity extends ActionBarActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
+        switch (item.getItemId()) {
+            // Respond to the action bar's Up/Home button
+            case android.R.id.home:
+                Intent upIntent = NavUtils.getParentActivityIntent(this);
+                if (NavUtils.shouldUpRecreateTask(this, upIntent)) {
+                    // This activity is NOT part of this app's task, so create a new task
+                    // when navigating up, with a synthesized back stack.
+                    TaskStackBuilder.create(this)
+                            // Add all of this activity's parents to the back stack
+                            .addNextIntentWithParentStack(upIntent)
+                                    // Navigate up to the closest parent
+                            .startActivities();
+                } else {
+                    // This activity is part of this app's task, so simply
+                    // navigate up to the logical parent activity.
 
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
+                    String activityToPass = "FromDisplayRejectedContractActivity" + box;
+
+                    upIntent.putExtra(activityToPass, true);
+                    NavUtils.navigateUpTo(this, upIntent);
+                }
+                return true;
+            case R.id.action_settings:
+                return true;
+            case R.id.action_compose_contract:
+                Intent i = new Intent(getApplicationContext(), CreateContractActivity.class);
+                startActivity(i);
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
         }
-
-        return super.onOptionsItemSelected(item);
     }
 }

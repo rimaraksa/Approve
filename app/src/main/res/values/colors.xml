@@ -19,4 +19,24 @@
     <color name="list_subheader_title">#757575</color>
 
     <color name="list_header_background">#616161</color>
+
+
+    <color name="theme">#0D47A1</color>
+    <color name="theme_2">#90CAF9</color>
+    <color name="theme_3">#E3F2FD</color>
+    <color name="text_white">#FFFFFF</color>
+    <color name="text_grey">#9E9E9E</color>
+    <color name="text_black">#000000</color>
+
+    <color name="selected">#E0E0E0</color>
+    <color name="reject">#B71C1C</color>
+    <color name="link">#0000EE</color>
+    <color name="divider">#B5B5B5</color>
+
+
+
+
+
+
+
 </resources>

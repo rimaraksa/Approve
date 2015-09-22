@@ -1,0 +1,87 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:paddingLeft="16dp"
+    android:paddingRight="16dp">
+
+    <TextView
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:textColor="#424242"
+        android:text="Change Phone"
+        android:fontFamily="helveticaneue"
+        android:layout_marginBottom="6dp"
+        android:textStyle="bold"
+        android:gravity="center_horizontal" />
+
+    <RelativeLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="3dp"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/BCountryCode"
+            android:layout_width="wrap_content"
+            android:layout_height="28dp"
+            android:layout_marginRight="4dp"
+            android:textSize="12sp"
+            android:text="+65 (SG)"
+            android:background="@drawable/background_alertdialog"
+            android:fontFamily="helveticaneue"
+            android:textStyle="bold"
+            android:onClick="onCountryCode"/>
+
+        <EditText
+            android:id="@+id/TFPhone"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:padding="6dp"
+            android:background="@drawable/background_alertdialog"
+            android:fontFamily="helveticaneue"
+            android:textSize="12sp"
+            android:inputType="phone"
+            android:hint="@string/phone"
+            android:singleLine="true"
+            android:layout_alignParentTop="true"
+            android:layout_toRightOf="@+id/BCountryCode"
+            android:layout_toEndOf="@+id/BCountryCode" />
+
+    </RelativeLayout>
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:padding="6dp"
+        android:orientation="horizontal"
+        android:gravity="center_horizontal">
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="32dp"
+            android:background="@drawable/background_cancel_button"
+            android:text="Cancel"
+            android:fontFamily="helveticaneue"
+            android:textStyle="bold"
+            android:textAllCaps="false"
+            android:layout_margin="6dp"
+            android:id="@+id/BCancel" />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="32dp"
+            android:background="@drawable/background_change_button"
+            android:textColor="#FFFFFF"
+            android:text="Change"
+            android:fontFamily="helveticaneue"
+            android:textStyle="bold"
+            android:textAllCaps="false"
+            android:layout_margin="6dp"
+            android:id="@+id/BChange" />
+
+    </LinearLayout>
+</LinearLayout>

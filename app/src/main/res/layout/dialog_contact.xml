@@ -1,0 +1,72 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:background="#FFFFFF">
+
+    <TextView
+        android:id="@+id/TVTitle"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:textColor="#000000"
+        android:fontFamily="helveticaneue"
+        android:textStyle="bold"
+        android:paddingLeft="12dp"
+        android:paddingRight="12dp"
+        android:paddingTop="16dp"
+        android:paddingBottom="8dp"
+        android:textSize="16sp"
+        android:gravity="center_horizontal" />
+
+    <View
+        android:layout_width="fill_parent"
+        android:layout_height="1dp"
+        android:background="#E0E0E0"/>
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <ImageButton
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:src="@mipmap/ic_action_call"
+            android:background="@android:color/transparent"
+            android:id="@+id/IBCall"/>
+
+        <View
+            android:layout_width="1dp"
+            android:layout_height="fill_parent"
+            android:background="#E0E0E0"
+            android:layout_marginTop="4dp"
+            android:layout_marginBottom="4dp"/>
+
+        <ImageButton
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:src="@mipmap/ic_action_sms"
+            android:background="@android:color/transparent"
+            android:id="@+id/IBSMS" />
+
+    </LinearLayout>
+
+    <View
+        android:layout_width="fill_parent"
+        android:layout_height="1dp"
+        android:background="#E0E0E0"/>
+
+    <Button
+        android:layout_width="fill_parent"
+        android:layout_height="32dp"
+        android:text="Cancel"
+        android:fontFamily="helveticaneue"
+        android:textAllCaps="false"
+        android:textColor="#1976D2"
+        android:background="#FFFFFF"
+        android:textStyle="bold"
+        style="?android:attr/borderlessButtonStyle"
+        android:id="@+id/BCancel" />
+</LinearLayout>

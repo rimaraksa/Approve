@@ -2,13 +2,20 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="com.example.rimaraksa.approve.Activity.DisplayActivity">
-    <item android:id="@+id/action_settings" android:title="@string/action_settings"
-        android:orderInCategory="100" app:showAsAction="never" />
+    <!--<item android:id="@+id/action_settings" android:title="@string/action_settings"-->
+        <!--android:orderInCategory="100" app:showAsAction="never" />-->
+
+    <!--<item-->
+        <!--android:id="@+id/action_search"-->
+        <!--android:title="@string/action_search"-->
+        <!--android:orderInCategory="100"-->
+        <!--android:icon="@drawable/ic_action_search"-->
+        <!--app:showAsAction="ifRoom" />-->
 
     <item
-        android:id="@+id/action_search"
-        android:title="@string/action_search"
+        android:id="@+id/action_compose_contract"
+        android:title="@string/action_compose_contract"
         android:orderInCategory="100"
-        android:icon="@drawable/ic_action_search"
+        android:icon="@drawable/ic_action_compose_contract"
         app:showAsAction="ifRoom" />
 </menu>

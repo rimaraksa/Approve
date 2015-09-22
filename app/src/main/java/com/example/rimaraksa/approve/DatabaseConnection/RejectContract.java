@@ -1,11 +1,15 @@
 package com.example.rimaraksa.approve.DatabaseConnection;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
+import android.support.v4.app.NavUtils;
+import android.support.v4.app.TaskStackBuilder;
 import android.widget.Toast;
 
 import com.example.rimaraksa.approve.Activity.DisplayActivity;
+import com.example.rimaraksa.approve.Activity.DisplayContractToBeApprovedActivity;
 import com.example.rimaraksa.approve.Global;
 import com.example.rimaraksa.approve.Model.Account;
 import com.example.rimaraksa.approve.Model.Contract;
@@ -25,14 +29,14 @@ import java.net.URLEncoder;
  */
 public class RejectContract extends AsyncTask<String,Void,String> {
     private Context context;
-    private Account account;
+    private Activity activity;
     private Contract contract;
     String reasonForRejection;
 
 
-    public RejectContract(Context context, Account account, Contract contract) {
+    public RejectContract(Context context, Activity activity, Contract contract) {
         this.context = context;
-        this.account = account;
+        this.activity = activity;
         this.contract = contract;
     }
 
@@ -81,21 +85,40 @@ public class RejectContract extends AsyncTask<String,Void,String> {
 
     @Override
     protected void onPostExecute(String result){
-        System.out.println(result);
+        System.out.println("RejectContract Result: " + result);
         try{
             JSONObject jsonData = new JSONObject(result);
 
             if(!jsonData.getBoolean("exists")){
-                Toast pass = Toast.makeText(context, "Contract is not available!", Toast.LENGTH_SHORT);
-                pass.show();
+                Global.rejectError(activity, 1);
+//                Toast pass = Toast.makeText(context, "Contract is not available!", Toast.LENGTH_SHORT);
+//                pass.show();
             }
             else{
-                Toast pass = Toast.makeText(context, contract.getSubject() + " is successfully rejected!", Toast.LENGTH_SHORT);
-                pass.show();
+//                Toast pass = Toast.makeText(context, contract.getSubject() + " is successfully rejected!", Toast.LENGTH_SHORT);
+//                pass.show();
             }
+//
+//            Intent upIntent = NavUtils.getParentActivityIntent(context);
+//            if (NavUtils.shouldUpRecreateTask(context, upIntent)) {
+//                // This activity is NOT part of this app's task, so create a new task
+//                // when navigating up, with a synthesized back stack.
+//                TaskStackBuilder.create(context)
+//                        // Add all of this activity's parents to the back stack
+//                        .addNextIntentWithParentStack(upIntent)
+//                                // Navigate up to the closest parent
+//                        .startActivities();
+//            }
+//            else {
+//                // This activity is part of this app's task, so simply
+//                // navigate up to the logical parent activity.
+//                upIntent.putExtra("FromDisplayContractToBeApprovedActivity", true);
+//                NavUtils.navigateUpTo(context, upIntent);
+//            }
+
 
             Intent i = new Intent(context, DisplayActivity.class);
-            i.putExtra("Account", account);
+            i.putExtra("FromDisplayContractToBeApprovedActivity", true);
             context.startActivity(i);
         }
         catch (JSONException e){

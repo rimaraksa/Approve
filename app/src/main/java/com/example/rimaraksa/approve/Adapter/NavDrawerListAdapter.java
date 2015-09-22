@@ -54,7 +54,9 @@ public class NavDrawerListAdapter extends BaseAdapter {
                 TextView tvName = (TextView) convertView.findViewById(R.id.TVName);
                 TextView tvUsername = (TextView) convertView.findViewById(R.id.TVUsername);
                 tvName.setText(Global.account.getName());
-                tvUsername.setText("(" + Global.account.getUsername() + ")");
+                tvUsername.setText("[" + Global.account.getUsername() + "]");
+
+                Global.drawerName = tvName;
 
                 if(navDrawerItems.get(position).getIcon() == -1){
                     ImageView ivProfile = (ImageView) convertView.findViewById(R.id.IVProfile);
@@ -78,6 +80,10 @@ public class NavDrawerListAdapter extends BaseAdapter {
                 ImageView imgIcon = (ImageView) convertView.findViewById(R.id.icon);
                 imgIcon.setImageResource(navDrawerItems.get(position).getIcon());
                 TextView txtCount = (TextView) convertView.findViewById(R.id.counter);
+                if(navDrawerItems.get(position).getCount().equals("0")){
+                    navDrawerItems.get(position).setCounterVisibility(false);
+                }
+
                 if(navDrawerItems.get(position).getCounterVisibility()){
                     txtCount.setText(navDrawerItems.get(position).getCount());
                 }

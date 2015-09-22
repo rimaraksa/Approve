@@ -3,13 +3,8 @@ package com.example.rimaraksa.approve.Activity;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.content.res.TypedArray;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.net.Uri;
-import android.provider.MediaStore;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
@@ -21,17 +16,12 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
-import android.widget.Toast;
+import android.widget.TextView;
 
 import com.example.rimaraksa.approve.Adapter.NavDrawerListAdapter;
-import com.example.rimaraksa.approve.DatabaseConnection.DownloadFile;
-import com.example.rimaraksa.approve.DatabaseConnection.UploadFileToServer;
-import com.example.rimaraksa.approve.Fragment.CreateContractFragment;
-import com.example.rimaraksa.approve.Fragment.InboxFragment;
-import com.example.rimaraksa.approve.Fragment.OutboxFragment;
+import com.example.rimaraksa.approve.Fragment.ContractListFragment;
 import com.example.rimaraksa.approve.Fragment.ProfileFragment;
 import com.example.rimaraksa.approve.Global;
-import com.example.rimaraksa.approve.Model.Account;
 import com.example.rimaraksa.approve.Model.Contract;
 import com.example.rimaraksa.approve.Model.NavDrawerItem;
 import com.example.rimaraksa.approve.R;
@@ -39,8 +29,6 @@ import com.example.rimaraksa.approve.R;
 import java.util.ArrayList;
 
 public class DisplayActivity extends ActionBarActivity {
-    private Account account;
-    private String account_id;
 
     private Toolbar mToolbar;
 
@@ -59,6 +47,7 @@ public class DisplayActivity extends ActionBarActivity {
     private TypedArray navMenuIcons;
 
     private ArrayList<NavDrawerItem> navDrawerItems;
+
     private NavDrawerListAdapter adapter;
 
     private ArrayList<Integer> unclickableNavDrawerItems;
@@ -66,25 +55,22 @@ public class DisplayActivity extends ActionBarActivity {
 
 //    Id of each view;
     int profile;
-    int createContract;
-    int waitingInbox, approvedInbox, rejectedInbox;
-    int waitingOutbox, approvedOutbox, rejectedOutbox;
+    int inbox, waitingInbox, approvedInbox, rejectedInbox;
+    int outbox, waitingOutbox, approvedOutbox, rejectedOutbox;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-//        setContentView(R.layout.activity_display);
-        setContentView(R.layout.display_test);
-
-        account = Global.account;
-        account_id = account.getAccount_id() + "";
+        setContentView(R.layout.activity_display);
 
         mToolbar = (Toolbar) findViewById(R.id.toolbar);
-
         setSupportActionBar(mToolbar);
-        getSupportActionBar().setDisplayShowHomeEnabled(true);
-
+//        getSupportActionBar().setDisplayShowHomeEnabled(true);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        mToolbar.setNavigationIcon(R.drawable.ic_menu_white);
+        getSupportActionBar().setTitle("");
+//        mToolbar.setNavigationContentDescription("test");
 
         mTitle = mDrawerTitle = getTitle();
 
@@ -100,48 +86,40 @@ public class DisplayActivity extends ActionBarActivity {
         navDrawerItems = new ArrayList<NavDrawerItem>();
         unclickableNavDrawerItems = new ArrayList<Integer>();
 
-        // adding nav drawer items to array
-        // Profile
-//        navDrawerItems.add(new NavDrawerItem(navMenuTitles[0], navMenuIcons.getResourceId(0, -1))); //header
+//        Ids of each item in the drawer
+        profile = 0;
+        inbox = 1;
+        waitingInbox = 2;
+        approvedInbox = 3;
+        rejectedInbox = 4;
+        outbox = 5;
+        waitingOutbox = 6;
+        approvedOutbox = 7;
+        rejectedOutbox = 8;
 
-//        navDrawerItems.add(new NavDrawerItem(-1)); //header
-
-        if(!Global.account.getProfpic().equals("null")){
-            navDrawerItems.add(new NavDrawerItem(-1)); //header
-        }
-        else{
-            navDrawerItems.add(new NavDrawerItem(navMenuIcons.getResourceId(0, -1))); //header
-        }
-
-        // Create new contract
-        navDrawerItems.add(new NavDrawerItem(navMenuTitles[1], navMenuIcons.getResourceId(1, -1)));
-        createContract = navDrawerItems.size()-1;
+        navDrawerItems.add(new NavDrawerItem(-1)); //header
 
         // Inbox
-        navDrawerItems.add(new NavDrawerItem(navMenuTitles[2]));    //unclickable
+        navDrawerItems.add(new NavDrawerItem(navMenuTitles[inbox]));    //unclickable
         unclickableNavDrawerItems.add(navDrawerItems.size()-1);
         // Waiting Inbox
-        navDrawerItems.add(new NavDrawerItem(navMenuTitles[3], navMenuIcons.getResourceId(2, -1), true, "22"));
-        waitingInbox = navDrawerItems.size()-1;
+        navDrawerItems.add(new NavDrawerItem(navMenuTitles[waitingInbox], navMenuIcons.getResourceId(waitingInbox, -1), true, (Global.waitingInboxCount + "")));
         // Approved Inbox
-        navDrawerItems.add(new NavDrawerItem(navMenuTitles[4], navMenuIcons.getResourceId(3, -1), true, "22"));
+        navDrawerItems.add(new NavDrawerItem(navMenuTitles[approvedInbox], navMenuIcons.getResourceId(approvedInbox, -1), true, (Global.approvedInboxCount + "")));
         approvedInbox = navDrawerItems.size()-1;
         // Rejected Inbox
-        navDrawerItems.add(new NavDrawerItem(navMenuTitles[5], navMenuIcons.getResourceId(4, -1), true, "22"));
+        navDrawerItems.add(new NavDrawerItem(navMenuTitles[rejectedInbox], navMenuIcons.getResourceId(rejectedInbox, -1), true, (Global.rejectedInboxCount + "")));
         rejectedInbox = navDrawerItems.size()-1;
 
         // Outbox
-        navDrawerItems.add(new NavDrawerItem(navMenuTitles[6]));    //unclickable
+        navDrawerItems.add(new NavDrawerItem(navMenuTitles[outbox]));    //unclickable
         unclickableNavDrawerItems.add(navDrawerItems.size()-1);
         // Waiting Outbox
-        navDrawerItems.add(new NavDrawerItem(navMenuTitles[7], navMenuIcons.getResourceId(5, -1), true, "22"));
-        waitingOutbox = navDrawerItems.size()-1;
+        navDrawerItems.add(new NavDrawerItem(navMenuTitles[waitingOutbox], navMenuIcons.getResourceId(waitingOutbox, -1), true, (Global.waitingOutboxCount + "")));
         // Approved Outbox
-        navDrawerItems.add(new NavDrawerItem(navMenuTitles[8], navMenuIcons.getResourceId(6, -1), true, "22"));
-        approvedOutbox = navDrawerItems.size()-1;
+        navDrawerItems.add(new NavDrawerItem(navMenuTitles[approvedOutbox], navMenuIcons.getResourceId(approvedOutbox, -1), true, (Global.approvedOutboxCount + "")));
         // Rejected Outbox
-        navDrawerItems.add(new NavDrawerItem(navMenuTitles[9], navMenuIcons.getResourceId(7, -1), true, "22"));
-        rejectedOutbox = navDrawerItems.size()-1;
+        navDrawerItems.add(new NavDrawerItem(navMenuTitles[rejectedOutbox], navMenuIcons.getResourceId(rejectedOutbox, -1), true, (Global.rejectedOutboxCount + "")));
 
 
         // Recycle the typed array
@@ -151,7 +129,7 @@ public class DisplayActivity extends ActionBarActivity {
 
 
         // Setting a customized navigation drawer list adapter
-        adapter = new NavDrawerListAdapter(getApplicationContext(), navDrawerItems)
+        Global.drawerAdapter = adapter = new NavDrawerListAdapter(getApplicationContext(), navDrawerItems)
         {
             public boolean areAllItemsEnabled()
             {
@@ -173,7 +151,7 @@ public class DisplayActivity extends ActionBarActivity {
         getSupportActionBar().setHomeButtonEnabled(true);
 
         mDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout,
-                R.drawable.ic_drawer, //nav menu toggle icon
+                R.drawable.ic_menu_white, //nav menu toggle icon
                 R.string.app_name, // nav drawer open - description for accessibility
                 R.string.app_name // nav drawer close - description for accessibility
         ){
@@ -194,65 +172,31 @@ public class DisplayActivity extends ActionBarActivity {
 
         if (savedInstanceState == null) {
             // on first time display view for first nav item
-            displayView(0);
+            if(getIntent().getBooleanExtra("FromDisplayContractToBeApprovedActivity", false)){
+                 displayView(waitingInbox);
+            }
+            else if(getIntent().getBooleanExtra("FromDisplaySentContractActivity", false)){
+                displayView(waitingOutbox);
+
+            }
+            else if(getIntent().getBooleanExtra("FromDisplayRejectedContractActivityInbox", false)){
+                displayView(rejectedInbox);
+            }
+            else if(getIntent().getBooleanExtra("FromDisplayRejectedContractActivityOutbox", false)){
+                displayView(rejectedOutbox);
+            }
+            else if(getIntent().getBooleanExtra("FromDisplayApprovedContractActivityInbox", false)){
+                displayView(approvedInbox);
+            }
+            else if(getIntent().getBooleanExtra("FromDisplayApprovedContractActivityOutbox", false)){
+                displayView(approvedOutbox);
+            }
+            else{
+                displayView(waitingInbox);
+            }
         }
 
     }
-
-//    private void populateLVInbox() {
-//        //create list of inbox
-//        String [] inbox = {"Waiting", "Approved", "Rejected"};
-//
-//        //build adapter
-//        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, R.layout.contract_inbox_list, inbox);
-//
-//        //configure list view
-//        ListView list = (ListView) findViewById(R.id.LVInbox);
-//        list.setAdapter(adapter);
-//
-//    }
-//
-//    private void populateLVOutbox() {
-//        //create list of outbox
-//        String [] outbox = {"Waiting", "Approved", "Rejected"};
-//
-//        //build adapter
-//        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, R.layout.contract_outbox_list, outbox);
-//
-//        //configure list view
-//        ListView list = (ListView) findViewById(R.id.LVOutbox);
-//        list.setAdapter(adapter);
-//    }
-//
-//    private void registerClickCallBackInbox() {
-//        ListView list = (ListView) findViewById(R.id.LVInbox);
-//        list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-//            @Override
-//            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-//                TextView textView = (TextView) view;
-//
-//                String inboxType = textView.getText().toString();
-//                status = inboxType.toLowerCase();
-//                new Display(DisplayActivity.this, account).execute(account_id, "receiver", "sender", status);
-//
-//            }
-//        });
-//    }
-//
-//    private void registerClickCallBackOutbox() {
-//        ListView list = (ListView) findViewById(R.id.LVOutbox);
-//        list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-//            @Override
-//            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-//                TextView textView = (TextView) view;
-//
-//                String inboxType = textView.getText().toString();
-//                status = inboxType.toLowerCase();
-//                new Display(DisplayActivity.this, account).execute(account_id, "sender", "receiver", status);
-//
-//            }
-//        });
-//    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -260,29 +204,6 @@ public class DisplayActivity extends ActionBarActivity {
         getMenuInflater().inflate(R.menu.menu_display, menu);
         return true;
     }
-
-//    @Override
-//    public boolean onOptionsItemSelected(MenuItem item) {
-//        // Handle action bar item clicks here. The action bar will
-//        // automatically handle clicks on the Home/Up button, so long
-//        // as you specify a parent activity in AndroidManifest.xml.
-//        int id = item.getItemId();
-//
-//        //noinspection SimplifiableIfStatement
-//        if (id == R.id.action_settings) {
-//            return true;
-//        }
-//
-//        return super.onOptionsItemSelected(item);
-//    }
-//
-//    public void onCreateClick(View v){
-//        if(v.getId() == R.id.BCreateContract){
-//            Intent i = new Intent(DisplayActivity.this, CreateContractActivity.class);
-//            i.putExtra("Account", account);
-//            startActivity(i);
-//        }
-//    }
 
 //    START TESTING
 
@@ -308,6 +229,10 @@ public class DisplayActivity extends ActionBarActivity {
         switch (item.getItemId()) {
             case R.id.action_settings:
                 return true;
+            case R.id.action_compose_contract:
+                Intent i = new Intent(getApplicationContext(), CreateContractActivity.class);
+                startActivity(i);
+                return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
@@ -320,7 +245,7 @@ public class DisplayActivity extends ActionBarActivity {
     public boolean onPrepareOptionsMenu(Menu menu) {
         // if nav drawer is opened, hide the action items
         boolean drawerOpen = mDrawerLayout.isDrawerOpen(mDrawerList);
-        menu.findItem(R.id.action_settings).setVisible(!drawerOpen);
+//        menu.findItem(R.id.action_compose_contract).setVisible(!drawerOpen);
         return super.onPrepareOptionsMenu(menu);
     }
 
@@ -330,23 +255,17 @@ public class DisplayActivity extends ActionBarActivity {
     private void displayView(int position) {
         // update the main content by replacing fragments
 
-
         Fragment fragment = null;
-        if(position == profile || position == createContract){
-
-            if(position == profile){
-                fragment = new ProfileFragment();
-            }
-            else{
-                fragment = new CreateContractFragment();
-            }
+        if(position == profile){
+            fragment = new ProfileFragment();
 
         }
         else {
-            String status;
+            String type, status;
+
             ArrayList<Contract> contracts = new ArrayList<Contract>();
             if(position == waitingInbox || position == approvedInbox || position == rejectedInbox){
-
+                type = "inbox";
                 if(position == waitingInbox){
                     status = "waiting";
                 }
@@ -357,13 +276,9 @@ public class DisplayActivity extends ActionBarActivity {
                     status = "rejected";
                 }
 
-                Bundle bundle = new Bundle();
-                bundle.putString("Status", status);
-                bundle.putString("AccountID", account_id);
-                fragment = new InboxFragment();
-                fragment.setArguments(bundle);
             }
             else{
+                type = "outbox";
                 if(position == waitingOutbox){
                     status = "waiting";
                 }
@@ -373,14 +288,15 @@ public class DisplayActivity extends ActionBarActivity {
                 else{
                     status = "rejected";
                 }
-
-                Bundle bundle = new Bundle();
-                bundle.putString("Status", status);
-                bundle.putString("AccountID", account_id);
-                fragment = new OutboxFragment();
-                fragment.setArguments(bundle);
-
             }
+
+            Bundle bundle = new Bundle();
+            bundle.putString("Type", type);
+            bundle.putString("Status", status);
+//            bundle.putString("AccountID", account_id);
+            fragment = new ContractListFragment();
+            fragment.setArguments(bundle);
+
         }
 
         if (fragment != null) {
@@ -390,8 +306,11 @@ public class DisplayActivity extends ActionBarActivity {
             // update selected item and title, then close the drawer
             mDrawerList.setItemChecked(position, true);
             mDrawerList.setSelection(position);
-            setTitle(navMenuTitles[position]);
+//            setTitle(navMenuTitles[position]);
+            TextView tvToolbarTitle = (TextView) findViewById(R.id.TVToolbarTitle);
+            tvToolbarTitle.setText(navMenuTitles[position]);
             mDrawerLayout.closeDrawer(mDrawerList);
+//            mDrawerLayout.setBackground(R.id.dr);
         }
         else {
             // error in creating fragment
@@ -410,7 +329,6 @@ public class DisplayActivity extends ActionBarActivity {
      * When using the ActionBarDrawerToggle, you must call it during
      * onPostCreate() and onConfigurationChanged()...
      */
-
     @Override
     protected void onPostCreate(Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);

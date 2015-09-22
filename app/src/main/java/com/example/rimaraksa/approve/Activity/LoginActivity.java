@@ -1,9 +1,10 @@
 package com.example.rimaraksa.approve.Activity;
 
-import android.app.Dialog;
+import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Intent;
-import android.os.AsyncTask;
+import android.graphics.Typeface;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.Menu;
@@ -18,12 +19,7 @@ import com.example.rimaraksa.approve.DatabaseConnection.Login;
 import com.example.rimaraksa.approve.Global;
 import com.example.rimaraksa.approve.R;
 
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
-import java.net.URL;
-import java.net.URLConnection;
-import java.net.URLEncoder;
+import org.w3c.dom.Text;
 
 
 public class LoginActivity extends ActionBarActivity {
@@ -31,14 +27,15 @@ public class LoginActivity extends ActionBarActivity {
 //    DatabaseHelper helper = new DatabaseHelper(this);
 
 
+    private Activity activity;
     private String username, password;
 
 
     //    Components on layout
     private EditText usernameField, passwordField;
-    private Button loginButton;
+    private Button bSignup, bLogin, bCancel;
     private TextView tvSignupLink;
-
+    EditText tfUsername, tfPassword;
 
     private ProgressDialog progress;
 
@@ -47,35 +44,101 @@ public class LoginActivity extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-        usernameField = (EditText)findViewById(R.id.TFUsername);
-        passwordField = (EditText)findViewById(R.id.TFPassword);
-        tvSignupLink = (TextView) findViewById(R.id.TVSignupLink);
-        loginButton = (Button) findViewById(R.id.BLogin);
+        activity = this;
+//        Setting own font for logo
+        String fontPath = "fonts/Coquette Bold.ttf";
+        TextView tvLogo = (TextView) findViewById(R.id.TVLogo);
+        Typeface typeface = Typeface.createFromAsset(getAssets(), fontPath);
+        tvLogo.setTypeface(typeface);
+
+//        usernameField = (EditText)findViewById(R.id.TFUsername);
+//        passwordField = (EditText)findViewById(R.id.TFPassword);
+//        tvSignupLink = (TextView) findViewById(R.id.TVSignupLink);
+        bSignup = (Button) findViewById(R.id.BSignup);
+        bLogin = (Button) findViewById(R.id.BLogin);
 
 //        Login the account
-        loginButton.setOnClickListener(new View.OnClickListener() {
+        bLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                username = usernameField.getText().toString();
-                password = passwordField.getText().toString();
+//                username = usernameField.getText().toString();
+//                password = passwordField.getText().toString();
+//
+//                new Login(v.getContext()).execute(username, password);
 
-                new Login(v.getContext()).execute(username, password);
+                popLoginDialog();
 
             }
         });
 
-//        Listening to signup link
-        tvSignupLink.setOnClickListener(new View.OnClickListener() {
-
+        //        Login the account
+        bSignup.setOnClickListener(new View.OnClickListener() {
+            @Override
             public void onClick(View v) {
-//                Switching to Signup screen
                 Intent i = new Intent(LoginActivity.this, SignupActivity.class);
                 startActivity(i);
+
             }
         });
+
+////        Listening to signup link
+//        tvSignupLink.setOnClickListener(new View.OnClickListener() {
+//
+//            public void onClick(View v) {
+////                Switching to Signup screen
+//                Intent i = new Intent(LoginActivity.this, SignupActivity.class);
+//                startActivity(i);
+//            }
+//        });
 
 
     }
+
+    private void popLoginDialog(){
+        final AlertDialog.Builder alertDialog = new AlertDialog.Builder(this);
+        final View view = getLayoutInflater().inflate(R.layout.dialog_login, null);
+        alertDialog.setView(view);
+
+        bCancel = (Button) view.findViewById(R.id.BCancel);
+        bLogin = (Button) view.findViewById(R.id.BLogin);
+        tfUsername = (EditText) view.findViewById(R.id.TFUsername);
+        tfPassword = (EditText) view.findViewById(R.id.TFPassword);
+
+        // Showing Alert Message
+        final AlertDialog ad = alertDialog.show();
+
+        bCancel.setOnClickListener(new View.OnClickListener() {
+
+            public void onClick(View v) {
+                ad.dismiss();
+            }
+        });
+
+        bLogin.setOnClickListener(new View.OnClickListener() {
+
+            public void onClick(View v) {
+                String username, password;
+
+                username = tfUsername.getText().toString();
+                password = tfPassword.getText().toString();
+
+                if(username.equals("") || password.equals("")){
+                    Global.loginError(activity, 0);
+                }
+                else{
+
+                    new Login(v.getContext(), activity).execute(username, password);
+                }
+
+
+
+            }
+        });
+    }
+
+
+
+
 
 
     @Override

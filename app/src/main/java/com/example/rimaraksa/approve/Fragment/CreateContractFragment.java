@@ -13,7 +13,7 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.example.rimaraksa.approve.DatabaseConnection.CreateContract;
-import com.example.rimaraksa.approve.Unused.CreateContractActivity;
+import com.example.rimaraksa.approve.Activity.CreateContractActivity;
 import com.example.rimaraksa.approve.Global;
 import com.example.rimaraksa.approve.Model.Account;
 import com.example.rimaraksa.approve.R;

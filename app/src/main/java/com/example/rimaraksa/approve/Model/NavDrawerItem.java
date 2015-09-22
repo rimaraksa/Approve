@@ -26,10 +26,10 @@ public class NavDrawerItem {
     }
 
 
-    public NavDrawerItem(String title, int icon){
-        this.title = title;
-        this.icon = icon;
-    }
+//    public NavDrawerItem(String title, int icon){
+//        this.title = title;
+//        this.icon = icon;
+//    }
 
 
 

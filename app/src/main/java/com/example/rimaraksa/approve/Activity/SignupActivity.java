@@ -1,102 +1,174 @@
 package com.example.rimaraksa.approve.Activity;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.content.res.TypedArray;
 import android.graphics.Bitmap;
+import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.support.v4.app.NavUtils;
+import android.support.v4.app.TaskStackBuilder;
+import android.support.v7.widget.Toolbar;
+import android.support.v7.app.ActionBarActivity;
+import android.text.Editable;
+import android.text.TextWatcher;
+import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.rimaraksa.approve.DatabaseConnection.Login;
+import com.example.rimaraksa.approve.Adapter.CountryCodeAdapter;
+import com.example.rimaraksa.approve.DatabaseConnection.Signup;
 import com.example.rimaraksa.approve.DatabaseConnection.UploadFileToServer;
 import com.example.rimaraksa.approve.Global;
 import com.example.rimaraksa.approve.Model.Account;
+import com.example.rimaraksa.approve.Model.Contract;
+import com.example.rimaraksa.approve.Model.Country;
 import com.example.rimaraksa.approve.R;
-import com.example.rimaraksa.approve.DatabaseConnection.Signup;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Locale;
 
 /**
  * Created by rimaraksa on 25/5/15.
  */
-public class SignupActivity extends Activity {
+public class SignupActivity extends ActionBarActivity  {
 
 //    DatabaseHelper helper = new DatabaseHelper(this);
 
-    String name, nric, phone, email, username, password, password2, profpic, signature;
+    private Activity activity;
+    private Toolbar mToolbar;
+    String name, nric, phone, username, password, confirmPassword, profpic, signature, filePath;
 
 //    Components on layout
-    private EditText nameField, nricField, phoneField, emailField, usernameField, passwordField, password2Field;
-    private Button signupButton;
-    private TextView tvLoginLink;
+    private ImageView ivSignature;
+    private EditText tfName, tfNric, tfPhone, tfUsername, tfPassword1, tfPassword2;
+    private Button bCountryCode, bSignup;
+//    private TextView tvLoginLink;
 
+    private EditText tfSearchCountry;
+    private ListView lvCountryCode;
+    private CountryCodeAdapter adapter;
+
+    private ArrayList<String> countryNameList = new ArrayList<String>();
+    private ArrayList<String> countryCodeList = new ArrayList<String>();
+    private ArrayList<String> countryCodePhoneList = new ArrayList<String>();
+    private ArrayList<Country> countryList = new ArrayList<Country>();
+    private AlertDialog ad;
 
     private Uri fileUri;
+
+    private boolean signatureRegistrationDone = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_signup);
 
-        nameField = (EditText) findViewById(R.id.TFName);
-        nricField = (EditText) findViewById(R.id.TFNRIC);
-        phoneField = (EditText) findViewById(R.id.TFPhone);
-        emailField = (EditText) findViewById(R.id.TFEmail);
-        usernameField = (EditText) findViewById(R.id.TFUsernameSU);
-        passwordField = (EditText) findViewById(R.id.TFPassword1);
-        password2Field = (EditText) findViewById(R.id.TFPassword2);
-        tvLoginLink = (TextView) findViewById(R.id.TVLoginLink);
-        signupButton = (Button) findViewById(R.id.BSignup);
+        activity = this;
+
+        mToolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(mToolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setTitle("");
+
+//        Setting own font for logo
+        String fontPath = "fonts/Coquette Bold.ttf";
+        TextView tvLogo = (TextView) findViewById(R.id.TVLogo);
+        Typeface typeface = Typeface.createFromAsset(getAssets(), fontPath);
+        tvLogo.setTypeface(typeface);
+
+        ivSignature = (ImageView) findViewById(R.id.IVSignature);
+        tfName = (EditText) findViewById(R.id.TFName);
+        tfNric = (EditText) findViewById(R.id.TFNRIC);
+        tfPhone = (EditText) findViewById(R.id.TFPhone);
+        tfUsername = (EditText) findViewById(R.id.TFUsername);
+        tfPassword1 = (EditText) findViewById(R.id.TFPassword1);
+        tfPassword2 = (EditText) findViewById(R.id.TFPassword2);
+//        tvLoginLink = (TextView) findViewById(R.id.TVLoginLink);
+
+        bCountryCode = (Button) findViewById(R.id.BCountryCode);
+        bSignup = (Button) findViewById(R.id.BSignup);
+
+        ivSignature.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                if (!isDeviceSupportCamera()) {
+                    Global.cameraError(activity, 0);
+                }
+                else {
+                    captureImage();
+                }
+            }
+        });
 
 //        Signup the account
-        signupButton.setOnClickListener(new View.OnClickListener() {
+        bSignup.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                name = nameField.getText().toString();
-                nric = nricField.getText().toString();
-                phone = phoneField.getText().toString();
-                email = emailField.getText().toString();
-                username = usernameField.getText().toString();
-                password = passwordField.getText().toString();
-                password2 = password2Field.getText().toString();
+                name = tfName.getText().toString();
+                nric = tfNric.getText().toString();
+                phone = tfPhone.getText().toString();
+                username = tfUsername.getText().toString();
+                password = tfPassword1.getText().toString();
+                confirmPassword = tfPassword2.getText().toString();
 
-                if(!password.equals(password2)){
+
+                if (name.equals("") || nric.equals("") || phone.equals("") || username.equals("") || password.equals("") || confirmPassword.equals("")) {
+                    Global.signupError(activity, 0);
+                }
+                else if (!password.equals(confirmPassword)) {
                     //popup message
-                    Toast pass = Toast.makeText(SignupActivity.this, "Passwords do not match!", Toast.LENGTH_SHORT);
-                    pass.show();
+                    Global.signupError(activity, 1);
                 }
-                else if(name.equals("") || nric.equals("") || phone.equals("") || email.equals("") || username.equals("") || password.equals("")){
-                    Toast pass = Toast.makeText(SignupActivity.this, "Required fields have not been completed!", Toast.LENGTH_SHORT);
-                    pass.show();
+                else if(!signatureRegistrationDone){
+                    Global.signupError(activity, 2);
                 }
-                else{
+                else {
+                    String editedPhone = Global.getEditedPhoneNumber(bCountryCode.getText() + " " + phone);
+                    phone = editedPhone;
+                    launchSignupActivity();
 
-                    if (!isDeviceSupportCamera()) {
-                        Toast.makeText(getApplicationContext(), "Sorry! Your device doesn't support camera", Toast.LENGTH_LONG).show();
-                    }
-                    else {
-                        System.out.println("Capture Image");
-                        captureImage();
-                    }
+
+
+//                    if (!isDeviceSupportCamera()) {
+//                        Global.cameraError(activity, 0);
+//                    } else {
+//                        captureImage();
+//                    }
 
                 }
             }
         });
-//        Listening to login link
-        tvLoginLink.setOnClickListener(new View.OnClickListener() {
+
+        bCountryCode.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-//                Switching to Signup screen
-                Intent i = new Intent(SignupActivity.this, LoginActivity.class);
-                startActivity(i);
+                popCountryCodeDialog();
             }
         });
+
+////        Listening to login link
+//        tvLoginLink.setOnClickListener(new View.OnClickListener() {
+//            public void onClick(View v) {
+////                Switching to Signup screen
+//                Intent i = new Intent(SignupActivity.this, LoginActivity.class);
+//                startActivity(i);
+//            }
+//        });
+
+
 
 
     }
@@ -116,12 +188,19 @@ public class SignupActivity extends Activity {
 
             }
             else if(requestCode == Global.IMAGE_CROP_REQUEST_CODE){
-                launchSignupActivity();
+//                launchSignupActivity();
+
+                Bundle extras = data.getExtras();
+//                Get the cropped bitmap
+                Bitmap bitmap = extras.getParcelable("data");
+//                Display the returned cropped image
+                ivSignature.setImageBitmap(bitmap);
+                signatureRegistrationDone = true;
             }
         }
         else if (resultCode == RESULT_CANCELED) {
             // User cancelled signature registration
-            Toast.makeText(getApplicationContext(), "Signature registration is cancelled!", Toast.LENGTH_SHORT).show();
+//            Toast.makeText(getApplicationContext(), "Signature registration is cancelled.", Toast.LENGTH_SHORT).show();
         }
 
 
@@ -129,17 +208,18 @@ public class SignupActivity extends Activity {
 
     private void launchSignupActivity(){
         String filePath = fileUri.getPath();
-        if (filePath != null) {
+//        if (filePath != null) {
             File file = new File(filePath);
             profpic = signature = file.getName();
-            Account account = new Account(name, nric, phone, email, username, password, profpic, signature);
-            new UploadFileToServer(this, account).execute(username, "signature", filePath);
+            Account account = new Account(name, nric, phone, username, password, profpic, signature);
+            new UploadFileToServer(this, activity, account).execute(username, "signature", filePath);
 //            new Signup(this).execute(name, nric, phone, email, username, password, filePath);
-        }
-        else{
-            Toast pass = Toast.makeText(SignupActivity.this, "Self-picture for signature has not been completed!", Toast.LENGTH_SHORT);
-            pass.show();
-        }
+//        }
+//        else{
+//            Global.signupError(activity, 2);
+//            Toast pass = Toast.makeText(SignupActivity.this, "Self-picture for signature has not been completed!", Toast.LENGTH_SHORT);
+//            pass.show();
+//        }
     }
 
     private boolean isDeviceSupportCamera() {
@@ -182,55 +262,112 @@ public class SignupActivity extends Activity {
             Toast.makeText(getApplicationContext(), "Sorry, your device doesn't support the crop action!", Toast.LENGTH_SHORT).show();
         }
     }
-//    public void onSignUpClick (View v){
-//        if(v.getId() == R.id.BSignupSU){
-//            EditText nameField = (EditText) findViewById(R.id.TFName);
-//            EditText nricField = (EditText) findViewById(R.id.TFNRIC);
-//            EditText phoneField = (EditText) findViewById(R.id.TFPhone);
-//            EditText emailField = (EditText) findViewById(R.id.TFEmail);
-//            EditText usernameField = (EditText) findViewById(R.id.TFUsernameSU);
-//            EditText passwordField = (EditText) findViewById(R.id.TFPassword1);
-//            EditText password2Field = (EditText) findViewById(R.id.TFPassword2);
-//
-//            String name = nameField.getText().toString();
-//            String nric = nricField.getText().toString();
-//            String phone = phoneField.getText().toString();
-//            String email = emailField.getText().toString();
-//            String username = usernameField.getText().toString();
-//            String password = passwordField.getText().toString();
-//            String password2 = password2Field.getText().toString();
-//
-//            if(!password.equals(password2)){
-//                //popup message
-//                Toast pass = Toast.makeText(SignupActivity.this, "Passwords do not match!", Toast.LENGTH_SHORT);
-//                pass.show();
-//            }
-//            else if(name.equals("") || nric.equals("") || phone.equals("") || email.equals("") || username.equals("") || password.equals("")){
-//                Toast pass = Toast.makeText(SignupActivity.this, "Required fields have not been completed!", Toast.LENGTH_SHORT);
-//                pass.show();
-//            }
-//            else{
-//                //insert new account
-////                Account account = new Account(name, nric, phone, email, username, password, null);
-////                a.setName(name);
-////                a.setNric(nric);
-////                a.setPhone(phone);
-////                a.setEmail(email);
-////                a.setUsername(username);
-////                a.setPassword(password);
-//
-////                helper.insertAccount(account);
-//
-//                new Signup(this).execute(name, nric, phone, email, username, password);
-//
-//
-////                Intent i = new Intent(SignUpActivity.this, DisplayActivity.class);
-////                i.putExtra("Account", account);
-////                i.putExtra("Name", account.getName());
-////                i.putExtra("Username", account.getUsername());
-////                startActivity(i);
-//            }
-//
-//        }
-//    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            // Respond to the action bar's Up/Home button
+            case android.R.id.home:
+                Intent upIntent = NavUtils.getParentActivityIntent(this);
+                if (NavUtils.shouldUpRecreateTask(this, upIntent)) {
+                    // This activity is NOT part of this app's task, so create a new task
+                    // when navigating up, with a synthesized back stack.
+                    TaskStackBuilder.create(this)
+                            // Add all of this activity's parents to the back stack
+                            .addNextIntentWithParentStack(upIntent)
+                                    // Navigate up to the closest parent
+                            .startActivities();
+                } else {
+                    // This activity is part of this app's task, so simply
+                    // navigate up to the logical parent activity.
+
+                    String activityToPass = "FromSignupActivity";
+                    upIntent.putExtra(activityToPass, true);
+                    NavUtils.navigateUpTo(this, upIntent);
+                }
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
+    private void popCountryCodeDialog(){
+        final AlertDialog.Builder alertDialog = new AlertDialog.Builder(this);
+        final View view = getLayoutInflater().inflate(R.layout.dialog_country_code, null);
+        alertDialog.setView(view);
+
+
+        lvCountryCode = (ListView) view.findViewById(R.id.LVCountryCode);
+
+        populateLVCountryCode(view);
+        registerClickCallBackCountryCode();
+
+
+
+        // Showing Alert Message
+        ad = alertDialog.show();
+
+    }
+
+    private void populateLVCountryCode(View view) {
+        //build adapter
+        String[] countryNames = getResources().getStringArray(R.array.country_names);
+        String[] countryCodes = getResources().getStringArray(R.array.country_codes);
+        String[] countryCodePhones = getResources().getStringArray(R.array.country_phone_codes);
+
+        countryNameList = new ArrayList<String>(Arrays.asList(countryNames));
+        countryCodeList = new ArrayList<String>(Arrays.asList(countryCodes));
+        countryCodePhoneList = new ArrayList<String>(Arrays.asList(countryCodePhones));
+
+        for (int i = 0; i < countryCodes.length; i++)
+        {
+            Country country = new Country(countryCodes[i], countryCodePhones[i], countryNames[i]);
+            // Binds all strings into an array
+            countryList.add(country);
+        }
+
+//        CountryCodeAdapter adapter = new CountryCodeAdapter(getApplicationContext(), activity, countryNameList, countryCodeList, countryCodePhoneList);
+
+        adapter = new CountryCodeAdapter(getApplicationContext(), activity, countryList);
+
+        //configure list view
+        lvCountryCode.setAdapter(adapter);
+
+        tfSearchCountry = (EditText) view.findViewById(R.id.TFSearchCountry);
+
+        tfSearchCountry.addTextChangedListener(new TextWatcher() {
+
+            @Override
+            public void afterTextChanged(Editable arg0) {
+                // TODO Auto-generated method stub
+                String text = tfSearchCountry.getText().toString().toLowerCase(Locale.getDefault());
+                adapter.filter(text);
+            }
+
+            @Override
+            public void beforeTextChanged(CharSequence arg0, int arg1,
+            int arg2, int arg3) {
+                // TODO Auto-generated method stub
+            }
+
+            @Override
+            public void onTextChanged(CharSequence arg0, int arg1, int arg2,
+            int arg3) {
+                // TODO Auto-generated method stub
+            }
+        });
+
+    }
+
+    private void registerClickCallBackCountryCode() {
+        lvCountryCode.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                ad.dismiss();
+                String countryCode = countryList.get(position).getCountryCode() + " " + countryList.get(position).getCountryPhoneCode();
+                bCountryCode.setText(countryCode);
+            }
+
+        });
+    }
 }

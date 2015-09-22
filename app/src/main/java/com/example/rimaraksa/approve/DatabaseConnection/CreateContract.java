@@ -8,6 +8,7 @@ import android.widget.Toast;
 import com.example.rimaraksa.approve.Activity.DisplayActivity;
 import com.example.rimaraksa.approve.Global;
 import com.example.rimaraksa.approve.Model.Account;
+import com.example.rimaraksa.approve.Model.NavDrawerItem;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -91,7 +92,7 @@ public class CreateContract extends AsyncTask<String,Void,String> {
 
     @Override
     protected void onPostExecute(String result){
-        System.out.println("result: " + result);
+        System.out.println("CreateContract Result: " + result);
         try{
             JSONObject jsonData = new JSONObject(result);
 
@@ -105,9 +106,12 @@ public class CreateContract extends AsyncTask<String,Void,String> {
                 if(!jsonData.getBoolean("contractKey_available")){
                     Toast temp = Toast.makeText(context, "Error during contract creation! Try again!", Toast.LENGTH_SHORT);
                     temp.show();
-                    System.out.println(contractKey);
+                    System.out.println("CreateContract contractKey: " + contractKey);
                 }
                 else{
+                    Global.waitingOutboxCount++;
+                    NavDrawerItem navDrawerItem = (NavDrawerItem) Global.drawerAdapter.getItem(6);
+                    navDrawerItem.setCount(Global.waitingOutboxCount + "");
                     Intent i = new Intent(context, DisplayActivity.class);
 
                     i.putExtra("Account", account);

@@ -4,28 +4,30 @@
     <string name="app_name">Approve</string>
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
-    <string name="title_activity_display">DisplayActivity</string>
-    <string name="emptyString"></string>
-    <string name="title_activity_create_contract">CreateContractActivity</string>
-    <string name="emptyStringContractBody"></string>
-    <string name="title_activity_display_contract_list">DisplayContractList</string>
-    <string name="title_activity_display_contract_to_be_approved">DisplayContractToBeApprovedActivity</string>
-    <string name="title_activity_approve">ApproveActivity</string>
-    <string name="title_activity_reject_contract">RejectContractActivity</string>
-    <string name="title_activity_display_sent_contract">DisplaySentContractActivity</string>
-    <string name="title_activity_display_approved_contract">DisplayApprovedContractActivity</string>
-    <string name="title_activity_display_rejected_contract">DisplayRejectedContractActivity</string>
-    <string name="title_activity_play_video">PlayVideoActivity</string>
+    <string name="title_activity_display"></string>
+    <string name="title_activity_create_contract">New Contract</string>
+    <string name="title_activity_display_contract_list">Display Contract List</string>
+    <string name="title_activity_display_contract_to_be_approved">Waiting Inbox</string>
+    <string name="title_activity_approve">Approve</string>
+    <string name="title_activity_reject_contract">Reject Contract</string>
+    <string name="title_activity_display_sent_contract">Waiting Outbox</string>
+    <string name="title_activity_display_approved_contract">Display Approved Contract</string>
+    <string name="title_activity_display_rejected_contract">Display Rejected Contract</string>
+    <string name="title_activity_play_video">Play Video</string>
 
     <!-- TEST -->
 
     <string name="action_search">Search</string>
     <string name="drawer_open">Open</string>
     <string name="drawer_close">Close</string>
+    <string name="action_send">Send</string>
+    <string name="action_cancel">Cancel</string>
+    <string name="action_compose_contract">Compose Contract</string>
+
     <!-- Nav Drawer Menu Items -->
     <string-array name="nav_drawer_items">
         <item>Profile</item>
-        <item>Compose contract</item>
+        <!--<item>Compose contract</item>-->
         <item>Inbox</item>
         <item>Waiting Inbox</item>
         <item>Approved Inbox</item>
@@ -40,10 +42,11 @@
     <!-- Keep them in order as the titles are in -->
     <array name="nav_drawer_icons">
         <item>@drawable/ic_profile</item>
-        <item>@drawable/ic_action_write</item>
+        <item></item>
         <item>@drawable/ic_waiting</item>
         <item>@drawable/ic_approved</item>
         <item>@drawable/ic_rejected</item>
+        <item></item>
         <item>@drawable/ic_waiting</item>
         <item>@drawable/ic_approved</item>
         <item>@drawable/ic_rejected</item>
@@ -55,5 +58,853 @@
     <string name="title_activity_camera">CameraActivity</string>
     <string name="title_activity_record">RecordActivity</string>
     <string name="title_activity_verify_signature">VerifySignatureActivity</string>
+
+    <!-- Login Activity-->
+    <string name="login">Log In</string>
+    <string name="signup">Sign Up</string>
+    <string name="slogan">Your Agreement Assistant</string>
+    <string name="password">Password</string>
+    <string name="username">Username (Email Address)</string>
+    <string name="name">Name</string>
+    <string name="nric">NRIC/FIN</string>
+    <string name="phone">Mobile Phone No.</string>
+    <string name="password2">Confirm Password</string>
+    <string name="prepare_video">Prepare Video</string>
+    <string name="continue_task">Continue</string>
+    <string name="cancel">Cancel</string>
+    <string name="prepare_justification">Prepare Justification</string>
+    <string name="search">Search</string>
+
+    <string-array name="country_codes">
+        <item>AD</item>
+        <item>AE</item>
+        <item>AF</item>
+        <item>AL</item>
+        <item>AM</item>
+        <item>AO</item>
+        <item>AQ</item>
+        <item>AR</item>
+        <item>AT</item>
+        <item>AU</item>
+        <item>AW</item>
+        <item>AZ</item>
+        <item>BA</item>
+        <item>BD</item>
+        <item>BE</item>
+        <item>BF</item>
+        <item>BG</item>
+        <item>BH</item>
+        <item>BI</item>
+        <item>BJ</item>
+        <item>BL</item>
+        <item>BN</item>
+        <item>BO</item>
+        <item>BR</item>
+        <item>BT</item>
+        <item>BW</item>
+        <item>BY</item>
+        <item>BZ</item>
+        <item>CA</item>
+        <item>CC</item>
+        <item>CD</item>
+        <item>CF</item>
+        <item>CG</item>
+        <item>CH</item>
+        <item>CI</item>
+        <item>CK</item>
+        <item>CL</item>
+        <item>CM</item>
+        <item>CN</item>
+        <item>CO</item>
+        <item>CR</item>
+        <item>CU</item>
+        <item>CV</item>
+        <item>CX</item>
+        <item>CY</item>
+        <item>CZ</item>
+        <item>DE</item>
+        <item>DJ</item>
+        <item>DK</item>
+        <item>DZ</item>
+        <item>EC</item>
+        <item>EE</item>
+        <item>EG</item>
+        <item>ER</item>
+        <item>ES</item>
+        <item>ET</item>
+        <item>FI</item>
+        <item>FJ</item>
+        <item>FK</item>
+        <item>FM</item>
+        <item>FO</item>
+        <item>FR</item>
+        <item>GA</item>
+        <item>GB</item>
+        <item>GE</item>
+        <item>GH</item>
+        <item>GI</item>
+        <item>GL</item>
+        <item>GM</item>
+        <item>GN</item>
+        <item>GQ</item>
+        <item>GR</item>
+        <item>GT</item>
+        <item>GW</item>
+        <item>GY</item>
+        <item>HK</item>
+        <item>HN</item>
+        <item>HR</item>
+        <item>HT</item>
+        <item>HU</item>
+        <item>ID</item>
+        <item>IE</item>
+        <item>IL</item>
+        <item>IM</item>
+        <item>IN</item>
+        <item>IQ</item>
+        <item>IR</item>
+        <item>IT</item>
+        <item>JO</item>
+        <item>JP</item>
+        <item>KE</item>
+        <item>KG</item>
+        <item>KH</item>
+        <item>KI</item>
+        <item>KM</item>
+        <item>KP</item>
+        <item>KR</item>
+        <item>KW</item>
+        <item>KZ</item>
+        <item>LA</item>
+        <item>LB</item>
+        <item>LI</item>
+        <item>LK</item>
+        <item>LR</item>
+        <item>LS</item>
+        <item>LT</item>
+        <item>LU</item>
+        <item>LV</item>
+        <item>LY</item>
+        <item>MA</item>
+        <item>MC</item>
+        <item>MD</item>
+        <item>ME</item>
+        <item>MG</item>
+        <item>MH</item>
+        <item>MK</item>
+        <item>ML</item>
+        <item>MM</item>
+        <item>MN</item>
+        <item>MO</item>
+        <item>MR</item>
+        <item>MT</item>
+        <item>MU</item>
+        <item>MV</item>
+        <item>MW</item>
+        <item>MX</item>
+        <item>MY</item>
+        <item>MZ</item>
+        <item>NA</item>
+        <item>NC</item>
+        <item>NE</item>
+        <item>NG</item>
+        <item>NI</item>
+        <item>NL</item>
+        <item>NO</item>
+        <item>NP</item>
+        <item>NR</item>
+        <item>NU</item>
+        <item>NZ</item>
+        <item>OM</item>
+        <item>PA</item>
+        <item>PE</item>
+        <item>PF</item>
+        <item>PG</item>
+        <item>PH</item>
+        <item>PK</item>
+        <item>PL</item>
+        <item>PM</item>
+        <item>PN</item>
+        <item>PR</item>
+        <item>PT</item>
+        <item>PW</item>
+        <item>PY</item>
+        <item>QA</item>
+        <item>RO</item>
+        <item>RS</item>
+        <item>RU</item>
+        <item>RW</item>
+        <item>SA</item>
+        <item>SB</item>
+        <item>SC</item>
+        <item>SD</item>
+        <item>SE</item>
+        <item>SG</item>
+        <item>SH</item>
+        <item>SI</item>
+        <item>SK</item>
+        <item>SL</item>
+        <item>SM</item>
+        <item>SN</item>
+        <item>SO</item>
+        <item>SR</item>
+        <item>ST</item>
+        <item>SV</item>
+        <item>SY</item>
+        <item>SZ</item>
+        <item>TD</item>
+        <item>TG</item>
+        <item>TH</item>
+        <item>TJ</item>
+        <item>TK</item>
+        <item>TL</item>
+        <item>TM</item>
+        <item>TN</item>
+        <item>TO</item>
+        <item>TR</item>
+        <item>TV</item>
+        <item>TW</item>
+        <item>TZ</item>
+        <item>UA</item>
+        <item>UG</item>
+        <item>US</item>
+        <item>UY</item>
+        <item>UZ</item>
+        <item>VA</item>
+        <item>VE</item>
+        <item>VN</item>
+        <item>VU</item>
+        <item>WF</item>
+        <item>WS</item>
+        <item>YE</item>
+        <item>YT</item>
+        <item>ZA</item>
+        <item>ZM</item>
+        <item>ZW</item>
+    </string-array>
+
+    <string-array name="country_phone_codes">
+        <item>(+376)</item>
+        <item>(+971)</item>
+        <item>(+93)</item>
+        <item>(+355)</item>
+        <item>(+374)</item>
+        <item>(+244)</item>
+        <item>(+672)</item>
+        <item>(+54)</item>
+        <item>(+43)</item>
+        <item>(+61)</item>
+        <item>(+297)</item>
+        <item>(+994)</item>
+        <item>(+387)</item>
+        <item>(+880)</item>
+        <item>(+32)</item>
+        <item>(+226)</item>
+        <item>(+359)</item>
+        <item>(+973)</item>
+        <item>(+257)</item>
+        <item>(+229)</item>
+        <item>(+590)</item>
+        <item>(+673)</item>
+        <item>(+591)</item>
+        <item>(+55)</item>
+        <item>(+975)</item>
+        <item>(+267)</item>
+        <item>(+375)</item>
+        <item>(+501)</item>
+        <item>(+1)</item>
+        <item>(+61)</item>
+        <item>(+243)</item>
+        <item>(+236)</item>
+        <item>(+242)</item>
+        <item>(+41)</item>
+        <item>(+225)</item>
+        <item>(+682)</item>
+        <item>(+56)</item>
+        <item>(+237)</item>
+        <item>(+86)</item>
+        <item>(+57)</item>
+        <item>(+506)</item>
+        <item>(+53)</item>
+        <item>(+238)</item>
+        <item>(+61)</item>
+        <item>(+357)</item>
+        <item>(+420)</item>
+        <item>(+49)</item>
+        <item>(+253)</item>
+        <item>(+45)</item>
+        <item>(+213)</item>
+        <item>(+593)</item>
+        <item>(+372)</item>
+        <item>(+20)</item>
+        <item>(+291)</item>
+        <item>(+34)</item>
+        <item>(+251)</item>
+        <item>(+358)</item>
+        <item>(+679)</item>
+        <item>(+500)</item>
+        <item>(+691)</item>
+        <item>(+298)</item>
+        <item>(+33)</item>
+        <item>(+241)</item>
+        <item>(+44)</item>
+        <item>(+995)</item>
+        <item>(+233)</item>
+        <item>(+350)</item>
+        <item>(+299)</item>
+        <item>(+220)</item>
+        <item>(+224)</item>
+        <item>(+240)</item>
+        <item>(+30)</item>
+        <item>(+502)</item>
+        <item>(+245)</item>
+        <item>(+592)</item>
+        <item>(+852)</item>
+        <item>(+504)</item>
+        <item>(+385)</item>
+        <item>(+509)</item>
+        <item>(+36)</item>
+        <item>(+62)</item>
+        <item>(+353)</item>
+        <item>(+972)</item>
+        <item>(+44)</item>
+        <item>(+91)</item>
+        <item>(+964)</item>
+        <item>(+98)</item>
+        <item>(+39)</item>
+        <item>(+962)</item>
+        <item>(+81)</item>
+        <item>(+254)</item>
+        <item>(+996)</item>
+        <item>(+855)</item>
+        <item>(+686)</item>
+        <item>(+269)</item>
+        <item>(+850)</item>
+        <item>(+82)</item>
+        <item>(+965)</item>
+        <item>(+7)</item>
+        <item>(+856)</item>
+        <item>(+961)</item>
+        <item>(+423)</item>
+        <item>(+94)</item>
+        <item>(+231)</item>
+        <item>(+266)</item>
+        <item>(+370)</item>
+        <item>(+352)</item>
+        <item>(+371)</item>
+        <item>(+218)</item>
+        <item>(+212)</item>
+        <item>(+377)</item>
+        <item>(+373)</item>
+        <item>(+382)</item>
+        <item>(+261)</item>
+        <item>(+692)</item>
+        <item>(+389)</item>
+        <item>(+223)</item>
+        <item>(+95)</item>
+        <item>(+976)</item>
+        <item>(+853)</item>
+        <item>(+222)</item>
+        <item>(+356)</item>
+        <item>(+230)</item>
+        <item>(+960)</item>
+        <item>(+265)</item>
+        <item>(+52)</item>
+        <item>(+60)</item>
+        <item>(+258)</item>
+        <item>(+264)</item>
+        <item>(+687)</item>
+        <item>(+227)</item>
+        <item>(+234)</item>
+        <item>(+505)</item>
+        <item>(+31)</item>
+        <item>(+47)</item>
+        <item>(+977)</item>
+        <item>(+674)</item>
+        <item>(+683)</item>
+        <item>(+64)</item>
+        <item>(+968)</item>
+        <item>(+507)</item>
+        <item>(+51)</item>
+        <item>(+689)</item>
+        <item>(+675)</item>
+        <item>(+63)</item>
+        <item>(+92)</item>
+        <item>(+48)</item>
+        <item>(+508)</item>
+        <item>(+870)</item>
+        <item>(+1)</item>
+        <item>(+351)</item>
+        <item>(+680)</item>
+        <item>(+595)</item>
+        <item>(+974)</item>
+        <item>(+40)</item>
+        <item>(+381)</item>
+        <item>(+7)</item>
+        <item>(+250)</item>
+        <item>(+966)</item>
+        <item>(+677)</item>
+        <item>(+248)</item>
+        <item>(+249)</item>
+        <item>(+46)</item>
+        <item>(+65)</item>
+        <item>(+290)</item>
+        <item>(+386)</item>
+        <item>(+421)</item>
+        <item>(+232)</item>
+        <item>(+378)</item>
+        <item>(+221)</item>
+        <item>(+252)</item>
+        <item>(+597)</item>
+        <item>(+239)</item>
+        <item>(+503)</item>
+        <item>(+963)</item>
+        <item>(+268)</item>
+        <item>(+235)</item>
+        <item>(+228)</item>
+        <item>(+66)</item>
+        <item>(+992)</item>
+        <item>(+690)</item>
+        <item>(+670)</item>
+        <item>(+993)</item>
+        <item>(+216)</item>
+        <item>(+676)</item>
+        <item>(+90)</item>
+        <item>(+688)</item>
+        <item>(+886)</item>
+        <item>(+255)</item>
+        <item>(+380)</item>
+        <item>(+256)</item>
+        <item>(+1)</item>
+        <item>(+598)</item>
+        <item>(+998)</item>
+        <item>(+39)</item>
+        <item>(+58)</item>
+        <item>(+84)</item>
+        <item>(+678)</item>
+        <item>(+681)</item>
+        <item>(+685)</item>
+        <item>(+967)</item>
+        <item>(+262)</item>
+        <item>(+27)</item>
+        <item>(+260)</item>
+        <item>(+263)</item>
+    </string-array>
+
+    <string-array name="country_names">
+        <item>Andorra</item>
+        <item>United Arab Emirates</item>
+        <item>Afghanistan</item>
+        <item>Albania</item>
+        <item>Armenia</item>
+        <item>Angola</item>
+        <item>Antarctica</item>
+        <item>Argentina</item>
+        <item>Austria</item>
+        <item>Australia</item>
+        <item>Aruba</item>
+        <item>Azerbaijan</item>
+        <item>Bosnia and Herzegovina</item>
+        <item>Bangladesh</item>
+        <item>Belgium</item>
+        <item>Burkina Faso</item>
+        <item>Bulgaria</item>
+        <item>Bahrain</item>
+        <item>Burundi</item>
+        <item>Benin</item>
+        <item>Saint Barthélemy</item>
+        <item>Brunei Darussalam</item>
+        <item>Bolivia</item>
+        <item>Brazil</item>
+        <item>Bhutan</item>
+        <item>Botswana</item>
+        <item>Belarus</item>
+        <item>Belize</item>
+        <item>Canada</item>
+        <item>Cocos (Keeling) Islands</item>
+        <item>The Democratic Republic of Congo</item>
+        <item>Central African Republic</item>
+        <item>Congo</item>
+        <item>Switzerland</item>
+        <item>Côte Divoire"</item>
+        <item>Cook Islands</item>
+        <item>Chile</item>
+        <item>Cameroon</item>
+        <item>China</item>
+        <item>Colombia</item>
+        <item>Costa Rica</item>
+        <item>Cuba</item>
+        <item>Cape Verde</item>
+        <item>Christmas Island</item>
+        <item>Cyprus</item>
+        <item>Czech Republic</item>
+        <item>Germany</item>
+        <item>Djibouti</item>
+        <item>Denmark</item>
+        <item>Algeria</item>
+        <item>Ecuador</item>
+        <item>Estonia</item>
+        <item>Egypt</item>
+        <item>Eritrea</item>
+        <item>Spain</item>
+        <item>Ethiopia</item>
+        <item>Finland</item>
+        <item>Fiji</item>
+        <item>Falkland Islands (Malvinas)</item>
+        <item>Micronesia, Federated States Of</item>
+        <item>Faroe Islands</item>
+        <item>France</item>
+        <item>Gabon</item>
+        <item>United Kingdom</item>
+        <item>Georgia</item>
+        <item>Ghana</item>
+        <item>Gibraltar</item>
+        <item>Greenland</item>
+        <item>Gambia</item>
+        <item>Guinea</item>
+        <item>Equatorial Guinea</item>
+        <item>Greece</item>
+        <item>Guatemala</item>
+        <item>Guinea-Bissau</item>
+        <item>Guyana</item>
+        <item>Hong Kong</item>
+        <item>Honduras</item>
+        <item>Croatia</item>
+        <item>Haiti</item>
+        <item>Hungary</item>
+        <item>Indonesia</item>
+        <item>Ireland</item>
+        <item>Israel</item>
+        <item>Isle of Man</item>
+        <item>India</item>
+        <item>Iraq</item>
+        <item>Islamic Republic of Iran</item>
+        <item>Italy</item>
+        <item>Jordan</item>
+        <item>Japan</item>
+        <item>Kenya</item>
+        <item>Kyrgyzstan</item>
+        <item>Cambodia</item>
+        <item>Kiribati</item>
+        <item>Comoros</item>
+        <item>North Korea</item>
+        <item>Republic of Korea</item>
+        <item>Kuwait</item>
+        <item>Kazakhstan</item>
+        <item>Lao Peoples Democratic Republic</item>
+        <item>Lebanon</item>
+        <item>Liechtenstein</item>
+        <item>Sri Lanka</item>
+        <item>Liberia</item>
+        <item>Lesotho</item>
+        <item>Lithuania</item>
+        <item>Luxembourg</item>
+        <item>Latvia</item>
+        <item>Libya</item>
+        <item>Morocco</item>
+        <item>Monaco</item>
+        <item>Republic of Moldova</item>
+        <item>Montenegro</item>
+        <item>Madagascar</item>
+        <item>Marshall Islands</item>
+        <item>Macedonia</item>
+        <item>Mali</item>
+        <item>Myanmar</item>
+        <item>Mongolia</item>
+        <item>Macao</item>
+        <item>Mauritania</item>
+        <item>Malta</item>
+        <item>Mauritius</item>
+        <item>Maldives</item>
+        <item>Malawi</item>
+        <item>Mexico</item>
+        <item>Malaysia</item>
+        <item>Mozambique</item>
+        <item>Namibia</item>
+        <item>New Caledonia</item>
+        <item>Niger</item>
+        <item>Nigeria</item>
+        <item>Nicaragua</item>
+        <item>Netherlands</item>
+        <item>Norway</item>
+        <item>Nepal</item>
+        <item>Nauru</item>
+        <item>Niue</item>
+        <item>New Zealand</item>
+        <item>Oman</item>
+        <item>Panama</item>
+        <item>Peru</item>
+        <item>French Polynesia</item>
+        <item>Papua New Guinea</item>
+        <item>Philippines</item>
+        <item>Pakistan</item>
+        <item>Poland</item>
+        <item>Saint Pierre and Miquelon</item>
+        <item>Pitcairn</item>
+        <item>Puerto Rico</item>
+        <item>Portugal</item>
+        <item>Palau</item>
+        <item>Paraguay</item>
+        <item>Qatar</item>
+        <item>Romania</item>
+        <item>Serbia</item>
+        <item>Russian Federation</item>
+        <item>Rwanda</item>
+        <item>Saudi Arabia</item>
+        <item>Solomon Islands</item>
+        <item>Seychelles</item>
+        <item>Sudan</item>
+        <item>Sweden</item>
+        <item>Singapore</item>
+        <item>Saint Helena</item>
+        <item>Slovenia</item>
+        <item>Slovakia</item>
+        <item>Sierra Leone</item>
+        <item>San Marino</item>
+        <item>Senegal</item>
+        <item>Somalia</item>
+        <item>Suriname</item>
+        <item>Sao Tome And Principe</item>
+        <item>El Salvador</item>
+        <item>Syrian Arab Republic</item>
+        <item>Swaziland</item>
+        <item>Chad</item>
+        <item>Togo</item>
+        <item>Thailand</item>
+        <item>Tajikistan</item>
+        <item>Tokelau</item>
+        <item>Timor-leste</item>
+        <item>Turkmenistan</item>
+        <item>Tunisia</item>
+        <item>Tonga</item>
+        <item>Turkey</item>
+        <item>Tuvalu</item>
+        <item>Taiwan</item>
+        <item>United Republic of Tanzania</item>
+        <item>Ukraine</item>
+        <item>Uganda</item>
+        <item>United States</item>
+        <item>Uruguay</item>
+        <item>Uzbekistan</item>
+        <item>Holy See (Vatican City State)</item>
+        <item>Venezuela</item>
+        <item>Viet Nam</item>
+        <item>Vanuatu</item>
+        <item>Wallis And Futuna</item>
+        <item>Samoa</item>
+        <item>Yemen</item>
+        <item>Mayotte</item>
+        <item>South Africa</item>
+        <item>Zambia</item>
+        <item>Zimbabwe</item>
+    </string-array>
+
+    <!--<countries name="country_codes_detail">-->
+        <!--<country code='ad' phoneCode='+376' name='Andorra' />-->
+        <!--<country code='ae' phoneCode='+971' name='United Arab Emirates' />-->
+        <!--<country code='af' phoneCode='+93' name='Afghanistan' />-->
+        <!--<country code='al' phoneCode='+355' name='Albania' />-->
+        <!--<country code='am' phoneCode='+374' name='Armenia' />-->
+        <!--<country code='ao' phoneCode='+244' name='Angola' />-->
+        <!--<country code='aq' phoneCode='+672' name='Antarctica' />-->
+        <!--<country code='ar' phoneCode='+54' name='Argentina' />-->
+        <!--<country code='at' phoneCode='+43' name='Austria' />-->
+        <!--<country code='au' phoneCode='+61' name='Australia' />-->
+        <!--<country code='aw' phoneCode='+297' name='Aruba' />-->
+        <!--<country code='az' phoneCode='+994' name='Azerbaijan' />-->
+        <!--<country code='ba' phoneCode='+387' name='Bosnia and Herzegovina' />-->
+        <!--<country code='bd' phoneCode='+880' name='Bangladesh' />-->
+        <!--<country code='be' phoneCode='+32' name='Belgium' />-->
+        <!--<country code='bf' phoneCode='+226' name='Burkina Faso' />-->
+        <!--<country code='bg' phoneCode='+359' name='Bulgaria' />-->
+        <!--<country code='bh' phoneCode='+973' name='Bahrain' />-->
+        <!--<country code='bi' phoneCode='+257' name='Burundi' />-->
+        <!--<country code='bj' phoneCode='+229' name='Benin' />-->
+        <!--<country code='bl' phoneCode='+590' name='Saint Barthélemy' />-->
+        <!--<country code='bn' phoneCode='+673' name='Brunei Darussalam' />-->
+        <!--<country code='bo' phoneCode='+591' name='Bolivia' />-->
+        <!--<country code='br' phoneCode='+55' name='Brazil' />-->
+        <!--<country code='bt' phoneCode='+975' name='Bhutan' />-->
+        <!--<country code='bw' phoneCode='+267' name='Botswana' />-->
+        <!--<country code='by' phoneCode='+375' name='Belarus' />-->
+        <!--<country code='bz' phoneCode='+501' name='Belize' />-->
+        <!--<country code='ca' phoneCode='+1' name='Canada' />-->
+        <!--<country code='cc' phoneCode='+61' name='Cocos (Keeling) Islands' />-->
+        <!--<country code='cd' phoneCode='+243' name='The Democratic Republic of The Congo' />-->
+        <!--<country code='cf' phoneCode='+236' name='Central African Republic' />-->
+        <!--<country code='cg' phoneCode='+242' name='Congo' />-->
+        <!--<country code='ch' phoneCode='+41' name='Switzerland' />-->
+        <!--<country code='ci' phoneCode='+225' name="Côte D'ivoire" />-->
+        <!--<country code='ck' phoneCode='+682' name='Cook Islands' />-->
+        <!--<country code='cl' phoneCode='+56' name='Chile' />-->
+        <!--<country code='cm' phoneCode='+237' name='Cameroon' />-->
+        <!--<country code='cn' phoneCode='+86' name='China' />-->
+        <!--<country code='co' phoneCode='+57' name='Colombia' />-->
+        <!--<country code='cr' phoneCode='+506' name='Costa Rica' />-->
+        <!--<country code='cu' phoneCode='+53' name='Cuba' />-->
+        <!--<country code='cv' phoneCode='+238' name='Cape Verde' />-->
+        <!--<country code='cx' phoneCode='+61' name='Christmas Island' />-->
+        <!--<country code='cy' phoneCode='+357' name='Cyprus' />-->
+        <!--<country code='cz' phoneCode='+420' name='Czech Republic' />-->
+        <!--<country code='de' phoneCode='+49' name='Germany' />-->
+        <!--<country code='dj' phoneCode='+253' name='Djibouti' />-->
+        <!--<country code='dk' phoneCode='+45' name='Denmark' />-->
+        <!--<country code='dz' phoneCode='+213' name='Algeria' />-->
+        <!--<country code='ec' phoneCode='+593' name='Ecuador' />-->
+        <!--<country code='ee' phoneCode='+372' name='Estonia' />-->
+        <!--<country code='eg' phoneCode='+20' name='Egypt' />-->
+        <!--<country code='er' phoneCode='+291' name='Eritrea' />-->
+        <!--<country code='es' phoneCode='+34' name='Spain' />-->
+        <!--<country code='et' phoneCode='+251' name='Ethiopia' />-->
+        <!--<country code='fi' phoneCode='+358' name='Finland' />-->
+        <!--<country code='fj' phoneCode='+679' name='Fiji' />-->
+        <!--<country code='fk' phoneCode='+500' name='Falkland Islands (Malvinas)' />-->
+        <!--<country code='fm' phoneCode='+691' name='Micronesia, Federated States Of' />-->
+        <!--<country code='fo' phoneCode='+298' name='Faroe Islands' />-->
+        <!--<country code='fr' phoneCode='+33' name='France' />-->
+        <!--<country code='ga' phoneCode='+241' name='Gabon' />-->
+        <!--<country code='gb' phoneCode='+44' name='United Kingdom' />-->
+        <!--<country code='ge' phoneCode='+995' name='Georgia' />-->
+        <!--<country code='gh' phoneCode='+233' name='Ghana' />-->
+        <!--<country code='gi' phoneCode='+350' name='Gibraltar' />-->
+        <!--<country code='gl' phoneCode='+299' name='Greenland' />-->
+        <!--<country code='gm' phoneCode='+220' name='Gambia' />-->
+        <!--<country code='gn' phoneCode='+224' name='Guinea' />-->
+        <!--<country code='gq' phoneCode='+240' name='Equatorial Guinea' />-->
+        <!--<country code='gr' phoneCode='+30' name='Greece' />-->
+        <!--<country code='gt' phoneCode='+502' name='Guatemala' />-->
+        <!--<country code='gw' phoneCode='+245' name='Guinea-bissau' />-->
+        <!--<country code='gy' phoneCode='+592' name='Guyana' />-->
+        <!--<country code='hk' phoneCode='+852' name='Hong Kong' />-->
+        <!--<country code='hn' phoneCode='+504' name='Honduras' />-->
+        <!--<country code='hr' phoneCode='+385' name='Croatia' />-->
+        <!--<country code='ht' phoneCode='+509' name='Haiti' />-->
+        <!--<country code='hu' phoneCode='+36' name='Hungary' />-->
+        <!--<country code='id' phoneCode='+62' name='Indonesia' />-->
+        <!--<country code='ie' phoneCode='+353' name='Ireland' />-->
+        <!--<country code='il' phoneCode='+972' name='Israel' />-->
+        <!--<country code='im' phoneCode='+44' name='Isle Of Man' />-->
+        <!--<country code='in' phoneCode='+91' name='India' />-->
+        <!--<country code='iq' phoneCode='+964' name='Iraq' />-->
+        <!--<country code='ir' phoneCode='+98' name='Islamic Republic Of Iran' />-->
+        <!--<country code='it' phoneCode='+39' name='Italy' />-->
+        <!--<country code='jo' phoneCode='+962' name='Jordan' />-->
+        <!--<country code='jp' phoneCode='+81' name='Japan' />-->
+        <!--<country code='ke' phoneCode='+254' name='Kenya' />-->
+        <!--<country code='kg' phoneCode='+996' name='Kyrgyzstan' />-->
+        <!--<country code='kh' phoneCode='+855' name='Cambodia' />-->
+        <!--<country code='ki' phoneCode='+686' name='Kiribati' />-->
+        <!--<country code='km' phoneCode='+269' name='Comoros' />-->
+        <!--<country code='kp' phoneCode='+850' name="Democratic People's Republic Of Korea" />-->
+        <!--<country code='kr' phoneCode='+82' name='Korea, Republic Of' />-->
+        <!--<country code='kw' phoneCode='+965' name='Kuwait' />-->
+        <!--<country code='kz' phoneCode='+7' name='Kazakhstan' />-->
+        <!--<country code='la' phoneCode='+856' name="Lao People's Democratic Republic" />-->
+        <!--<country code='lb' phoneCode='+961' name='Lebanon' />-->
+        <!--<country code='li' phoneCode='+423' name='Liechtenstein' />-->
+        <!--<country code='lk' phoneCode='+94' name='Sri Lanka' />-->
+        <!--<country code='lr' phoneCode='+231' name='Liberia' />-->
+        <!--<country code='ls' phoneCode='+266' name='Lesotho' />-->
+        <!--<country code='lt' phoneCode='+370' name='Lithuania' />-->
+        <!--<country code='lu' phoneCode='+352' name='Luxembourg' />-->
+        <!--<country code='lv' phoneCode='+371' name='Latvia' />-->
+        <!--<country code='ly' phoneCode='+218' name='Libya' />-->
+        <!--<country code='ma' phoneCode='+212' name='Morocco' />-->
+        <!--<country code='mc' phoneCode='+377' name='Monaco' />-->
+        <!--<country code='md' phoneCode='+373' name='Moldova, Republic Of' />-->
+        <!--<country code='me' phoneCode='+382' name='Montenegro' />-->
+        <!--<country code='mg' phoneCode='+261' name='Madagascar' />-->
+        <!--<country code='mh' phoneCode='+692' name='Marshall Islands' />-->
+        <!--<country code='mk' phoneCode='+389' name='Macedonia, The Former Yugoslav Republic Of' />-->
+        <!--<country code='ml' phoneCode='+223' name='Mali' />-->
+        <!--<country code='mm' phoneCode='+95' name='Myanmar' />-->
+        <!--<country code='mn' phoneCode='+976' name='Mongolia' />-->
+        <!--<country code='mo' phoneCode='+853' name='Macao' />-->
+        <!--<country code='mr' phoneCode='+222' name='Mauritania' />-->
+        <!--<country code='mt' phoneCode='+356' name='Malta' />-->
+        <!--<country code='mu' phoneCode='+230' name='Mauritius' />-->
+        <!--<country code='mv' phoneCode='+960' name='Maldives' />-->
+        <!--<country code='mw' phoneCode='+265' name='Malawi' />-->
+        <!--<country code='mx' phoneCode='+52' name='Mexico' />-->
+        <!--<country code='my' phoneCode='+60' name='Malaysia' />-->
+        <!--<country code='mz' phoneCode='+258' name='Mozambique' />-->
+        <!--<country code='na' phoneCode='+264' name='Namibia' />-->
+        <!--<country code='nc' phoneCode='+687' name='New Caledonia' />-->
+        <!--<country code='ne' phoneCode='+227' name='Niger' />-->
+        <!--<country code='ng' phoneCode='+234' name='Nigeria' />-->
+        <!--<country code='ni' phoneCode='+505' name='Nicaragua' />-->
+        <!--<country code='nl' phoneCode='+31' name='Netherlands' />-->
+        <!--<country code='no' phoneCode='+47' name='Norway' />-->
+        <!--<country code='np' phoneCode='+977' name='Nepal' />-->
+        <!--<country code='nr' phoneCode='+674' name='Nauru' />-->
+        <!--<country code='nu' phoneCode='+683' name='Niue' />-->
+        <!--<country code='nz' phoneCode='+64' name='New Zealand' />-->
+        <!--<country code='om' phoneCode='+968' name='Oman' />-->
+        <!--<country code='pa' phoneCode='+507' name='Panama' />-->
+        <!--<country code='pe' phoneCode='+51' name='Peru' />-->
+        <!--<country code='pf' phoneCode='+689' name='French Polynesia' />-->
+        <!--<country code='pg' phoneCode='+675' name='Papua New Guinea' />-->
+        <!--<country code='ph' phoneCode='+63' name='Philippines' />-->
+        <!--<country code='pk' phoneCode='+92' name='Pakistan' />-->
+        <!--<country code='pl' phoneCode='+48' name='Poland' />-->
+        <!--<country code='pm' phoneCode='+508' name='Saint Pierre and Miquelon' />-->
+        <!--<country code='pn' phoneCode='+870' name='Pitcairn' />-->
+        <!--<country code='pr' phoneCode='+1' name='Puerto Rico' />-->
+        <!--<country code='pt' phoneCode='+351' name='Portugal' />-->
+        <!--<country code='pw' phoneCode='+680' name='Palau' />-->
+        <!--<country code='py' phoneCode='+595' name='Paraguay' />-->
+        <!--<country code='qa' phoneCode='+974' name='Qatar' />-->
+        <!--<country code='ro' phoneCode='+40' name='Romania' />-->
+        <!--<country code='rs' phoneCode='+381' name='Serbia' />-->
+        <!--<country code='ru' phoneCode='+7' name='Russian Federation' />-->
+        <!--<country code='rw' phoneCode='+250' name='Rwanda' />-->
+        <!--<country code='sa' phoneCode='+966' name='Saudi Arabia' />-->
+        <!--<country code='sb' phoneCode='+677' name='Solomon Islands' />-->
+        <!--<country code='sc' phoneCode='+248' name='Seychelles' />-->
+        <!--<country code='sd' phoneCode='+249' name='Sudan' />-->
+        <!--<country code='se' phoneCode='+46' name='Sweden' />-->
+        <!--<country code='sg' phoneCode='+65' name='Singapore' />-->
+        <!--<country code='sh' phoneCode='+290' name='Saint Helena' />-->
+        <!--<country code='si' phoneCode='+386' name='Slovenia' />-->
+        <!--<country code='sk' phoneCode='+421' name='Slovakia' />-->
+        <!--<country code='sl' phoneCode='+232' name='Sierra Leone' />-->
+        <!--<country code='sm' phoneCode='+378' name='San Marino' />-->
+        <!--<country code='sn' phoneCode='+221' name='Senegal' />-->
+        <!--<country code='so' phoneCode='+252' name='Somalia' />-->
+        <!--<country code='sr' phoneCode='+597' name='Suriname' />-->
+        <!--<country code='st' phoneCode='+239' name='Sao Tome And Principe' />-->
+        <!--<country code='sv' phoneCode='+503' name='El Salvador' />-->
+        <!--<country code='sy' phoneCode='+963' name='Syrian Arab Republic' />-->
+        <!--<country code='sz' phoneCode='+268' name='Swaziland' />-->
+        <!--<country code='td' phoneCode='+235' name='Chad' />-->
+        <!--<country code='tg' phoneCode='+228' name='Togo' />-->
+        <!--<country code='th' phoneCode='+66' name='Thailand' />-->
+        <!--<country code='tj' phoneCode='+992' name='Tajikistan' />-->
+        <!--<country code='tk' phoneCode='+690' name='Tokelau' />-->
+        <!--<country code='tl' phoneCode='+670' name='Timor-leste' />-->
+        <!--<country code='tm' phoneCode='+993' name='Turkmenistan' />-->
+        <!--<country code='tn' phoneCode='+216' name='Tunisia' />-->
+        <!--<country code='to' phoneCode='+676' name='Tonga' />-->
+        <!--<country code='tr' phoneCode='+90' name='Turkey' />-->
+        <!--<country code='tv' phoneCode='+688' name='Tuvalu' />-->
+        <!--<country code='tw' phoneCode='+886' name='Taiwan, Province Of China' />-->
+        <!--<country code='tz' phoneCode='+255' name='United Republic of Tanzania' />-->
+        <!--<country code='ua' phoneCode='+380' name='Ukraine' />-->
+        <!--<country code='ug' phoneCode='+256' name='Uganda' />-->
+        <!--<country code='us' phoneCode='+1' name='United States' />-->
+        <!--<country code='uy' phoneCode='+598' name='Uruguay' />-->
+        <!--<country code='uz' phoneCode='+998' name='Uzbekistan' />-->
+        <!--<country code='va' phoneCode='+39' name='Holy See (Vatican City State)' />-->
+        <!--<country code='ve' phoneCode='+58' name='Venezuela' />-->
+        <!--<country code='vn' phoneCode='+84' name='Viet Nam' />-->
+        <!--<country code='vu' phoneCode='+678' name='Vanuatu' />-->
+        <!--<country code='wf' phoneCode='+681' name='Wallis And Futuna' />-->
+        <!--<country code='ws' phoneCode='+685' name='Samoa' />-->
+        <!--<country code='ye' phoneCode='+967' name='Yemen' />-->
+        <!--<country code='yt' phoneCode='+262' name='Mayotte' />-->
+        <!--<country code='za' phoneCode='+27' name='South Africa' />-->
+        <!--<country code='zm' phoneCode='+260' name='Zambia' />-->
+        <!--<country code='zw' phoneCode='+263' name='Zimbabwe' />-->
+    <!--</countries>-->
 
 </resources>

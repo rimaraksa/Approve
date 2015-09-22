@@ -56,15 +56,9 @@
                 android:layout_marginTop="8dp"
                 android:textColor="#FF909090" />
 
-            <TextView
-                android:id="@+id/TVEmail"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:textColor="#FF909090" />
 
             <TextView
-                android:id="@+id/TVUsername"
+                android:id="@+id/TVReceiver"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"

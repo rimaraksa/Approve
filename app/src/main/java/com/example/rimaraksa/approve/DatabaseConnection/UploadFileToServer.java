@@ -5,6 +5,7 @@ package com.example.rimaraksa.approve.DatabaseConnection;
  */
 
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -13,6 +14,7 @@ import android.os.AsyncTask;
 import android.widget.Toast;
 //import org.apache.http.entity.mime.MultipartEntity;
 
+import com.example.rimaraksa.approve.Activity.DisplayActivity;
 import com.example.rimaraksa.approve.Global;
 import com.example.rimaraksa.approve.Model.Account;
 
@@ -38,32 +40,30 @@ import java.io.IOException;
  * */
 public class UploadFileToServer extends AsyncTask<String,Void,String> {
     private Context context;
+    private Activity activity;
     private Account account;
 
     private String key, fileType, filePath, targetPath;
 
     private File file;
 
-    private ProgressDialog progressDialog;
-
     // Progress dialog type (0 - for Horizontal progress bar)
     public static final int progress_bar_type = 0;
 
-    public UploadFileToServer(Context context) {
+    public UploadFileToServer(Context context, Activity activity) {
         this.context = context;
+        this.activity = activity;
     }
 
 //    Upload for the first time, upload signature
-    public UploadFileToServer(Context context, Account account) {
+    public UploadFileToServer(Context context, Activity activity, Account account) {
         this.context = context;
+        this.activity = activity;
         this.account = account;
     }
 
     protected void onPreExecute(){
-
         super.onPreExecute();
-        progressDialog = ProgressDialog.show(context, "Please Wait", "Processing...");
-
 
     }
 
@@ -133,31 +133,34 @@ public class UploadFileToServer extends AsyncTask<String,Void,String> {
 
     @Override
     protected void onPostExecute(String result){
-        System.out.println(result);
-
-        try{
+        System.out.println("UploadFileToServer Result: " + result);
+        try {
             JSONObject jsonData = new JSONObject(result);
 
-            if(fileType.equals("signature")){
-                new Signup(context).execute(account.getName(), account.getNric(), account.getPhone(), account.getEmail(), account.getUsername(), account.getPassword(), account.getProfpic(), account.getSignature());
-            }
-            else{
-                if(jsonData.getBoolean("error")){
-                    Toast pass = Toast.makeText(context, "ERROR: " + jsonData.getString("message"), Toast.LENGTH_SHORT);
-                    pass.show();
+            if (!jsonData.getBoolean("error")) {
+                if (fileType.equals("signature")) {
+                    new Signup(context, activity).execute(account.getName(), account.getNric(), account.getPhone(), account.getUsername(), account.getPassword(), account.getProfpic(), account.getSignature());
                 }
-                else if(!jsonData.getBoolean("exists")){
-                    Toast pass = Toast.makeText(context, "Contract/Account is no longer available!", Toast.LENGTH_SHORT);
-                    pass.show();
+                else if(fileType.equals("video")){
+                    Intent i = new Intent(context, DisplayActivity.class);
+                    i.putExtra("FromDisplayContractToBeApprovedActivity", true);
+                    context.startActivity(i);
                 }
             }
-
+            else {
+                Toast pass = Toast.makeText(context, "ERROR: " + jsonData.getString("message"), Toast.LENGTH_SHORT);
+                pass.show();
+                if (!jsonData.getBoolean("exists")) {
+                    pass = Toast.makeText(context, "Contract/Account is no longer available!", Toast.LENGTH_SHORT);
+                    pass.show();
+                }
+            }
         }
         catch (JSONException e){
             e.printStackTrace();
         }
 
-        progressDialog.dismiss();
+
 
     }
 

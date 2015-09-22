@@ -32,7 +32,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String COLUMN_NAME = "name";
     private static final String COLUMN_NRIC = "nric";
     private static final String COLUMN_PHONE = "phone";
-    private static final String COLUMN_EMAIL = "email";
     private static final String COLUMN_USERNAME = "username";
     private static final String COLUMN_PASSWORD = "password";
 
@@ -92,7 +91,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         values.put(COLUMN_NAME, a.getName());
         values.put(COLUMN_NRIC, a.getNric());
         values.put(COLUMN_PHONE, a.getPhone());
-        values.put(COLUMN_EMAIL, a.getEmail());
         values.put(COLUMN_USERNAME, a.getUsername());
         values.put(COLUMN_PASSWORD, a.getPassword());
 

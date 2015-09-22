@@ -1,10 +1,5 @@
 package com.example.rimaraksa.approve.Model;
 
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-
-import com.example.rimaraksa.approve.DatabaseConnection.DownloadFile;
-
 import java.io.Serializable;
 
 /**
@@ -12,13 +7,12 @@ import java.io.Serializable;
  */
 public class Account implements Serializable {
     int account_id;
-    String name, nric, phone, email, username, password, profpic, signature;
+    String name, nric, phone, username, password, profpic, signature;
 
-    public Account(String name, String nric, String phone, String email, String username, String password, String profpic, String signature) {
+    public Account(String name, String nric, String phone, String username, String password, String profpic, String signature) {
         this.name = name;
         this.nric = nric;
         this.phone = phone;
-        this.email = email;
         this.username = username;
         this.password = password;
         this.profpic = profpic;
@@ -55,14 +49,6 @@ public class Account implements Serializable {
 
     public String getPhone(){
         return phone;
-    }
-
-    public void setEmail(String email){
-        this.email = email;
-    }
-
-    public String getEmail(){
-        return email;
     }
 
     public void setUsername(String username){

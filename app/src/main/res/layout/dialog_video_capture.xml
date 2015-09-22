@@ -1,0 +1,65 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:paddingLeft="16dp"
+    android:paddingRight="16dp">
+
+    <TextView
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:textColor="#000000"
+        android:text="@string/prepare_video"
+        android:fontFamily="helveticaneue"
+        android:textStyle="bold"
+        android:paddingLeft="12dp"
+        android:paddingRight="12dp"
+        android:paddingTop="16dp"
+        android:paddingBottom="8dp"
+        android:textSize="16sp"
+        android:gravity="center_horizontal" />
+
+    <TextView
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:textColor="#000000"
+        android:fontFamily="helveticaneue"
+        android:layout_marginBottom="16dp"
+        android:gravity="center_horizontal"
+        android:paddingLeft="12dp"
+        android:paddingRight="12dp"
+        android:textSize="12sp"
+        android:id="@+id/TVMessage"/>
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:padding="6dp"
+        android:orientation="horizontal"
+        android:gravity="center_horizontal">
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="32dp"
+            android:background="@drawable/background_cancel_button"
+            android:text="@string/cancel"
+            android:fontFamily="helveticaneue"
+            android:textStyle="bold"
+            android:textAllCaps="false"
+            android:layout_margin="6dp"
+            android:id="@+id/BCancel" />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="32dp"
+            android:background="@drawable/background_change_button"
+            android:textColor="#FFFFFF"
+            android:text="@string/continue_task"
+            android:fontFamily="helveticaneue"
+            android:textStyle="bold"
+            android:textAllCaps="false"
+            android:layout_margin="6dp"
+            android:id="@+id/BContinue" />
+
+    </LinearLayout>
+</LinearLayout>
