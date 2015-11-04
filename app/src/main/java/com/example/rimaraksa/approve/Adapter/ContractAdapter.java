@@ -10,12 +10,10 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.example.rimaraksa.approve.Global;
+import com.example.rimaraksa.approve.Util;
 import com.example.rimaraksa.approve.Model.Contract;
-import com.example.rimaraksa.approve.Model.Country;
 import com.example.rimaraksa.approve.R;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Locale;
 
@@ -31,12 +29,15 @@ public class ContractAdapter extends BaseAdapter {
     private ArrayList<Bitmap> filteredProfpicList;
     private ArrayList<String> nameList = null;
     private ArrayList<String> filteredNameList;
+    private ArrayList<String> usernameList = null;
+    private ArrayList<String> filteredUsernameList;
     private ArrayList<String> phoneList = null;
     private ArrayList<String> filteredPhoneList;
+
     private static LayoutInflater inflater;
     private String role;
 
-    public ContractAdapter(Context context, Activity activity, ArrayList<Contract> contractList, ArrayList<Bitmap> profpicList, ArrayList<String> nameList, ArrayList<String> phoneList, String role) {
+    public ContractAdapter(Context context, Activity activity, ArrayList<Contract> contractList, ArrayList<Bitmap> profpicList, ArrayList<String> nameList, ArrayList<String> usernameList, ArrayList<String> phoneList, String role) {
         this.context = context;
         this.activity = activity;
 
@@ -51,6 +52,10 @@ public class ContractAdapter extends BaseAdapter {
         this.nameList = nameList;
         this.filteredNameList = new ArrayList<String>();
         this.filteredNameList.addAll(nameList);
+
+        this.usernameList = usernameList;
+        this.filteredUsernameList = new ArrayList<String>();
+        this.filteredUsernameList.addAll(usernameList);
 
         this.phoneList = phoneList;
         this.filteredPhoneList = new ArrayList<String>();
@@ -87,6 +92,7 @@ public class ContractAdapter extends BaseAdapter {
         Contract c = contractList.get(position);
         Bitmap b = profpicList.get(position);
         String n = nameList.get(position);
+        String u = usernameList.get(position);
 
         ImageView ivProfileSenderOrReceiver = (ImageView) convertView.findViewById(R.id.IVProfileSenderOrReceiver);
         TextView receiverOrSender = (TextView) convertView.findViewById(R.id.TVReceiverOrSender);
@@ -96,19 +102,20 @@ public class ContractAdapter extends BaseAdapter {
 
 
         ivProfileSenderOrReceiver.setImageBitmap(b);
+        receiverOrSender.setText(n + " [" + u + "]");
 
-        if(role.equals("sender")){
-
-            receiverOrSender.setText(n + " [" + c.getReceiver() + "]");
-        }
-        else{
-            receiverOrSender.setText(n + " [" + c.getSender() + "]");
-
-        }
+//        if(role.equals("sender")){
+//
+//            receiverOrSender.setText(n + " [" + c.getReceiver() + "]");
+//        }
+//        else{
+//            receiverOrSender.setText(n + " [" + usernameList.get(position) + "]");
+//
+//        }
 
         String time;
 
-        if(c.getStatus().equals("waiting")){
+        if(c.getStatus().equals("pending")){
 
             time = c.getDateRequest();
         }
@@ -117,14 +124,14 @@ public class ContractAdapter extends BaseAdapter {
 
         }
 
-        if(Global.isDateToday(time)){
-            time = Global.getTimeFromDateTime(time);
+        if(Util.isDateToday(time)){
+            time = Util.getTimeFromDateTime(time);
         }
-        else if(Global.isDateThisWeek(time)){
-            time = Global.getDayOfTheWeekFromDateTime(time);
+        else if(Util.isDateThisWeek(time)){
+            time = Util.getDayOfTheWeekFromDateTime(time);
         }
         else{
-            time = Global.getDateFromDateTime(time);
+            time = Util.getDateFromDateTime(time);
         }
 
         tvDate.setText(time);
@@ -139,12 +146,14 @@ public class ContractAdapter extends BaseAdapter {
 
         contractList.clear();
         nameList.clear();
+        usernameList.clear();
         profpicList.clear();
         phoneList.clear();
 
         if (charText.length() == 0) {
             contractList.addAll(filteredContractList);
             nameList.addAll(filteredNameList);
+            usernameList.addAll(filteredUsernameList);
             profpicList.addAll(filteredProfpicList);
             phoneList.addAll(filteredPhoneList);
         }
@@ -152,10 +161,13 @@ public class ContractAdapter extends BaseAdapter {
         {
             for (int i = 0; i < filteredContractList.size(); i++)
             {
-                if (filteredNameList.get(i).toLowerCase(Locale.getDefault()).contains(charText) || filteredContractList.get(i).getSubject().toLowerCase(Locale.getDefault()).contains(charText) || filteredContractList.get(i).getSender().toLowerCase(Locale.getDefault()).contains(charText) || filteredContractList.get(i).getReceiver().toLowerCase(Locale.getDefault()).contains(charText))
+                if (filteredNameList.get(i).toLowerCase(Locale.getDefault()).contains(charText) ||
+                        filteredUsernameList.get(i).toLowerCase(Locale.getDefault()).contains(charText) ||
+                        filteredContractList.get(i).getSubject().toLowerCase(Locale.getDefault()).contains(charText))
                 {
                     contractList.add(filteredContractList.get(i));
                     nameList.add(filteredNameList.get(i));
+                    usernameList.add(filteredUsernameList.get(i));
                     profpicList.add(filteredProfpicList.get(i));
                     phoneList.add(filteredPhoneList.get(i));
                 }

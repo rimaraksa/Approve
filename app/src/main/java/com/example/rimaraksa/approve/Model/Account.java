@@ -9,6 +9,17 @@ public class Account implements Serializable {
     int account_id;
     String name, nric, phone, username, password, profpic, signature;
 
+    public Account(int account_id, String name, String nric, String phone, String username, String password, String profpic, String signature) {
+        this.account_id = account_id;
+        this.name = name;
+        this.nric = nric;
+        this.phone = phone;
+        this.username = username;
+        this.password = password;
+        this.profpic = profpic;
+        this.signature = signature;
+    }
+
     public Account(String name, String nric, String phone, String username, String password, String profpic, String signature) {
         this.name = name;
         this.nric = nric;

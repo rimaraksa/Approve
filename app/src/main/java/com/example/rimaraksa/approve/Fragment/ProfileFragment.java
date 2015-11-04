@@ -1,6 +1,5 @@
 package com.example.rimaraksa.approve.Fragment;
 
-import android.animation.Animator;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Fragment;
@@ -14,11 +13,9 @@ import android.os.Bundle;
 import android.provider.MediaStore;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.inputmethod.EditorInfo;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
@@ -31,22 +28,20 @@ import android.widget.Toast;
 import com.example.rimaraksa.approve.Activity.DisplayActivity;
 import com.example.rimaraksa.approve.Activity.LoginActivity;
 import com.example.rimaraksa.approve.Adapter.CountryCodeAdapter;
-import com.example.rimaraksa.approve.DatabaseConnection.UpdateAccount;
-import com.example.rimaraksa.approve.DatabaseConnection.UploadFileToServer;
-import com.example.rimaraksa.approve.Global;
+import com.example.rimaraksa.approve.ServerConnection.UpdateAccount;
+import com.example.rimaraksa.approve.ServerConnection.UploadFile;
+import com.example.rimaraksa.approve.Util;
 import com.example.rimaraksa.approve.Model.Account;
 import com.example.rimaraksa.approve.Model.Country;
-import com.example.rimaraksa.approve.Model.NavDrawerItem;
 import com.example.rimaraksa.approve.R;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Locale;
 
 public class ProfileFragment extends Fragment {
 
     private DisplayActivity activity;
-    private Account account = Global.account;
+    private Account account = Util.account;
     private Uri fileUri;
 
     //        Components on layout
@@ -55,23 +50,18 @@ public class ProfileFragment extends Fragment {
     private ImageView ivProfile, ivProfileExpanded;
 
     private EditText tfName, tfNRIC, tfPhone, tfUsername, tfPassword;
+
     private ImageButton ibLogout;
     private TextView tvLogout;
 
 
+//    For Change Phone Alert Dialog
+    private AlertDialog adChangePassword, adInputPassword, adChangePhone, adChangeCountryCode;
     private ArrayList<Country> countryList = new ArrayList<Country>();
-    private AlertDialog ad;
-    private ListView lvCountryCode;
     private CountryCodeAdapter adapter;
+    private ListView lvCountryCode;
     private Button bCountryCode;
-    //    Hold a reference to the current animator,
-//    so that it can be canceled mid-way.
-    private Animator mCurrentAnimator;
 
-    //    The system "short" animation time duration, in milliseconds. This
-//    duration is ideal for subtle animations or animations that occur
-//    very frequently.
-    private int mShortAnimationDuration;
 
     public ProfileFragment() {
     }
@@ -81,68 +71,6 @@ public class ProfileFragment extends Fragment {
 
         activity = (DisplayActivity) getActivity();
         View view = inflater.inflate(R.layout.fragment_profile, container, false);
-
-//        tvName = (TextView) view.findViewById(R.id.TVName);
-//        tvNRIC = (TextView) view.findViewById(R.id.TVNRIC);
-//        tvPhone = (TextView) view.findViewById(R.id.TVPhone);
-//        tvUsername = (TextView) view.findViewById(R.id.TVReceiver);
-//        ivProfile = (ImageView) view.findViewById(R.id.IVProfile);
-//        ivProfileExpanded = (ImageView) view.findViewById(R.id.IVProfileExpanded);
-//        tvProfileLink = (TextView) view.findViewById(R.id.TVProfileLink);
-//
-//        editButton = (Button) view.findViewById(R.id.BEdit);
-//
-//        if(!account.getProfpic().equals("null")){
-//            ivProfile.setImageBitmap(Global.accountProfpicBitmap);
-//            ivProfileExpanded.setImageBitmap(Global.accountProfpicBitmap);
-//        }
-//        else{
-//            ivProfile.setImageResource(R.drawable.ic_profile);
-//        }
-//
-//        tvName.setText(account.getName());
-//        tvNRIC.setText("NRIC: " + account.getNric());
-//        tvPhone.setText("Phone: " + account.getPhone());
-//        tvUsername.setText("Username: " + account.getUsername());
-//
-//
-//
-//        ivProfile.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                ivProfileExpanded.setVisibility(View.VISIBLE);
-//            }
-//        });
-//
-//        ivProfileExpanded.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                ivProfileExpanded.setVisibility(View.INVISIBLE);
-//            }
-//        });
-//
-//        editButton.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//
-////        Edit profile by editable views
-//
-//            }
-//        });
-//
-//        tvProfileLink.setOnClickListener(new View.OnClickListener() {
-//
-//            public void onClick(View v) {
-////                Upload a profile picture from camera/album
-//                if (!isDeviceSupportCamera()) {
-//                    Toast.makeText(getActivity(), "Sorry! Your device doesn't support camera", Toast.LENGTH_LONG).show();
-//                }
-//                else {
-//                    System.out.println("Capture Image");
-//                    captureImage();
-//                }
-//            }
-//        });
 
         ivProfile = (ImageView) view.findViewById((R.id.IVProfile));
         tfName = (EditText) view.findViewById(R.id.TFName);
@@ -154,10 +82,7 @@ public class ProfileFragment extends Fragment {
         ibLogout = (ImageButton) view.findViewById(R.id.IBLogout);
         tvLogout = (TextView) view.findViewById(R.id.TVLogout);
 
-
-
-
-        ivProfile.setImageBitmap(Global.accountProfpicBitmap);
+        ivProfile.setImageBitmap(Util.accountProfpicBitmap);
         tfName.setText(account.getName());
         tfUsername.setText(account.getUsername());
         tfPassword.setText(account.getPassword());
@@ -187,9 +112,9 @@ public class ProfileFragment extends Fragment {
             public void onFocusChange(View v, boolean hasFocus) {
                 if (!hasFocus) {
                     String newName = tfName.getText().toString();
-                    if (!newName.equals(Global.account.getName())) {
-                        Global.account.setName(newName);
-                        Global.drawerName.setText(newName);
+                    if (!newName.equals(Util.account.getName())) {
+                        Util.account.setName(newName);
+                        Util.drawerName.setText(newName);
 
 
                         new UpdateAccount(getActivity().getApplicationContext(), getActivity(), account).execute("name", newName);
@@ -236,31 +161,14 @@ public class ProfileFragment extends Fragment {
                 */
                 if (!hasFocus) {
                     String newNRIC = tfNRIC.getText().toString();
-                    if (!newNRIC.equals(Global.account.getNric())) {
-                        Global.account.setNric(newNRIC);
+                    if (!newNRIC.equals(Util.account.getNric())) {
+                        Util.account.setNric(newNRIC);
                         new UpdateAccount(getActivity().getApplicationContext(), getActivity(), account).execute("nric", newNRIC);
                     }
                 }
             }
         });
 
-
-//        tfPhone.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-//
-//            @Override
-//            public void onFocusChange(View v, boolean hasFocus) {
-//                /* When focus is lost check that the text field
-//                * has valid values.
-//                */
-//                if (!hasFocus) {
-//                    String newPhone = tfPhone.getText().toString();
-//                    if (!newPhone.equals(Global.account.getPhone())) {
-//                        Global.account.setPhone(newPhone);
-//                        new UpdateAccount(getActivity().getApplicationContext(), getActivity(), account).execute("phone", newPhone);
-//                    }
-//                }
-//            }
-//        });
 
         String fontPath = "fonts/Coquette Bold.ttf";
         TextView tvLogo = (TextView) view.findViewById(R.id.TVLogo);
@@ -270,6 +178,7 @@ public class ProfileFragment extends Fragment {
 
         return view;
     }
+
 
     private void popChangePasswordDialog(){
         final AlertDialog.Builder alertDialog = new AlertDialog.Builder(getActivity());
@@ -283,20 +192,18 @@ public class ProfileFragment extends Fragment {
         final EditText tfNewPassword2 = (EditText) view.findViewById(R.id.TFNewPassword2);
 
         // Showing Alert Message
-        ad = alertDialog.show();
+        adChangePassword = alertDialog.show();
 
         bCancel.setOnClickListener(new View.OnClickListener() {
 
             public void onClick(View v) {
-//                Upload a profile picture from camera/album
-                ad.dismiss();
+                adChangePassword.dismiss();
             }
         });
 
         bChange.setOnClickListener(new View.OnClickListener() {
 
             public void onClick(View v) {
-//                Upload a profile picture from camera/album
                 String currentPassword, newPassword1, newPassword2;
 
                 currentPassword = tfCurrentPassword.getText().toString();
@@ -304,16 +211,21 @@ public class ProfileFragment extends Fragment {
                 newPassword2 = tfNewPassword2.getText().toString();
 
                 if (currentPassword.equals("") || newPassword1.equals("") || newPassword2.equals("")) {
-                    Global.changePasswordError(activity, 0);
-                } else if (!currentPassword.equals(Global.account.getPassword())) {
-                    Global.changePasswordError(activity, 1);
-
-                } else if (!newPassword1.equals(newPassword2)) {
-                    Global.changePasswordError(activity, 2);
-                } else {
+                    Util.changePasswordError(activity, 0);
+                }
+                else if (!currentPassword.equals(Util.account.getPassword())) {
+                    Util.changePasswordError(activity, 1);
+                }
+                else if (!newPassword1.equals(newPassword2)) {
+                    Util.changePasswordError(activity, 2);
+                }
+                else if(!Util.isPasswordValid(newPassword1)){
+                    Util.changePasswordError(activity, 3);
+                }
+                else {
                     new UpdateAccount(getActivity().getApplicationContext(), getActivity(), account).execute("password", newPassword1);
                     tfPassword.setText(newPassword1);
-                    ad.dismiss();
+                    adChangePassword.dismiss();
                 }
             }
         });
@@ -331,33 +243,31 @@ public class ProfileFragment extends Fragment {
         final EditText tfPassword = (EditText) view.findViewById(R.id.TFPassword);
 
         // Showing Alert Message
-        ad = alertDialog.show();
+        adInputPassword = alertDialog.show();
 
         bCancel.setOnClickListener(new View.OnClickListener() {
 
             public void onClick(View v) {
-//                Upload a profile picture from camera/album
-                ad.dismiss();
+                adInputPassword.dismiss();
             }
         });
 
         bConfirm.setOnClickListener(new View.OnClickListener() {
 
             public void onClick(View v) {
-//                Upload a profile picture from camera/album
                 String password;
 
                 password = tfPassword.getText().toString();
 
                 if(password.equals("")){
-                    Global.inputPasswordError(activity, 0);
+                    Util.inputPasswordError(activity, 0);
                 }
-                else if (!password.equals(Global.account.getPassword())) {
-                    Global.inputPasswordError(activity, 1);
+                else if (!password.equals(Util.account.getPassword())) {
+                    Util.inputPasswordError(activity, 1);
 
                 }
                 else {
-                    ad.dismiss();
+                    adInputPassword.dismiss();
                     popChangePhoneDialog();
                 }
             }
@@ -371,14 +281,13 @@ public class ProfileFragment extends Fragment {
         final View view = getActivity().getLayoutInflater().inflate(R.layout.dialog_change_phone, null);
         alertDialog.setView(view);
 
-        final Button bCountryCode = (Button) view.findViewById(R.id.BCountryCode);
+        bCountryCode = (Button) view.findViewById(R.id.BCountryCode);
         final Button bCancel = (Button) view.findViewById(R.id.BCancel);
         final Button bChange = (Button) view.findViewById(R.id.BChange);
         final EditText tfPhoneDialog = (EditText) view.findViewById(R.id.TFPhone);
 
         // Showing Alert Message
-        ad = alertDialog.show();
-
+        adChangePhone = alertDialog.show();
 
         bCountryCode.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
@@ -389,27 +298,25 @@ public class ProfileFragment extends Fragment {
         bCancel.setOnClickListener(new View.OnClickListener() {
 
             public void onClick(View v) {
-//                Upload a profile picture from camera/album
-                ad.dismiss();
+                adChangePhone.dismiss();
             }
         });
 
         bChange.setOnClickListener(new View.OnClickListener() {
 
             public void onClick(View v) {
-//                Upload a profile picture from camera/album
                 String phone;
 
                 phone = tfPhoneDialog.getText().toString();
 
                 if (phone.equals("")) {
-                    Global.changePhoneError(activity, 0);
+                    Util.changePhoneError(activity, 0);
                 }
                 else {
-                    String editedPhone = Global.getEditedPhoneNumber(bCountryCode.getText() + " " + phone);
+                    String editedPhone = Util.getEditedPhoneNumber(bCountryCode.getText() + " " + phone);
                     new UpdateAccount(getActivity().getApplicationContext(), getActivity(), account).execute("phone", editedPhone);
                     tfPhone.setText(editedPhone);
-                    ad.dismiss();
+                    adChangePhone.dismiss();
                 }
             }
         });
@@ -422,13 +329,13 @@ public class ProfileFragment extends Fragment {
         final View view = getActivity().getLayoutInflater().inflate(R.layout.dialog_country_code, null);
         alertDialog.setView(view);
 
+        lvCountryCode = (ListView) view.findViewById(R.id.LVCountryCode);
+
         populateLVCountryCode(view);
         registerClickCallBackCountryCode();
 
-
-
         // Showing Alert Message
-        ad = alertDialog.show();
+        adChangeCountryCode = alertDialog.show();
 
     }
 
@@ -436,16 +343,19 @@ public class ProfileFragment extends Fragment {
         //build adapter
         String[] countryNames = getResources().getStringArray(R.array.country_names);
         String[] countryCodes = getResources().getStringArray(R.array.country_codes);
-        String[] countryCodePhones = getResources().getStringArray(R.array.country_phone_codes);
+        String[] countryPhoneCodes = getResources().getStringArray(R.array.country_phone_codes);
+
+        System.out.println("countrycodes length: " + countryCodes.length);
 
         for (int i = 0; i < countryCodes.length; i++)
         {
-            Country country = new Country(countryCodes[i], countryCodePhones[i], countryNames[i]);
+
+            Country country = new Country(countryCodes[i], countryPhoneCodes[i], countryNames[i]);
             // Binds all strings into an array
             countryList.add(country);
         }
 
-//        CountryCodeAdapter adapter = new CountryCodeAdapter(getApplicationContext(), activity, countryNameList, countryCodeList, countryCodePhoneList);
+        System.out.println("countrycodes, countryList: " + countryCodes.length + ", " + countryList.size());
 
         adapter = new CountryCodeAdapter(activity.getApplicationContext(), activity, countryList);
 
@@ -482,9 +392,12 @@ public class ProfileFragment extends Fragment {
         lvCountryCode.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                ad.dismiss();
+                adChangeCountryCode.dismiss();
+                System.out.println("Size: " + countryList.size());
                 String countryCode = countryList.get(position).getCountryCode() + " " + countryList.get(position).getCountryPhoneCode();
+                System.out.println("countryCode: " + countryCode);
                 bCountryCode.setText(countryCode);
+                countryList.clear();
             }
 
         });
@@ -507,18 +420,16 @@ public class ProfileFragment extends Fragment {
     }
 
     /**
-     * Checking device has camera hardware or not
+     * Checking device has a camera
      */
     private boolean isDeviceSupportCamera() {
-        if (getActivity().getPackageManager().hasSystemFeature(
-                PackageManager.FEATURE_CAMERA)) {
-            // This device has a camera
+        if (getActivity().getPackageManager().hasSystemFeature(PackageManager.FEATURE_CAMERA)) {
+//            Has a camera
             return true;
         } else {
-            // This device does not have a camera
+//            Does not have a camera
             return false;
         }
-
     }
 
     private void onSetProfilePicture(View v){
@@ -537,45 +448,41 @@ public class ProfileFragment extends Fragment {
 
     private void captureImage(){
             Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-            startActivityForResult(intent, Global.CAMERA_CAPTURE_IMAGE_REQUEST_CODE);
+            startActivityForResult(intent, Util.CAMERA_CAPTURE_IMAGE_REQUEST_CODE);
     }
 
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if(resultCode == getActivity().RESULT_OK){
-            if(requestCode == Global.CAMERA_CAPTURE_IMAGE_REQUEST_CODE) {
+        if(resultCode == Activity.RESULT_OK){
+            if(requestCode == Util.CAMERA_CAPTURE_IMAGE_REQUEST_CODE) {
                 fileUri = data.getData();
                 performCrop();
             }
-            else if(requestCode == Global.IMAGE_CROP_REQUEST_CODE){
+            else if(requestCode == Util.IMAGE_CROP_REQUEST_CODE){
 //            Upload the file to database
                 launchUploadActivity(true);
 //            Get the returned data
                 Bundle extras = data.getExtras();
 //            Get the cropped bitmap
                 Bitmap bitmap = extras.getParcelable("data");
-
 //            Set the profpic bitmap globally
-                Global.accountProfpicBitmap = bitmap;
+                Util.accountProfpicBitmap = bitmap;
 //            Set the profpic bitmap for drawer globally
-                Global.drawerProfpic.setImageBitmap(bitmap);
-
+                Util.drawerProfpic.setImageBitmap(bitmap);
 //            Display the returned cropped image
                 ivProfile.setImageBitmap(bitmap);
 //                ivProfileExpanded.setImageBitmap(bitmap);
             }
-
         }
         bSetProfilePicture.setTypeface(null, Typeface.NORMAL);
-
     }
 
     private void launchUploadActivity(boolean isImage){
         String filePath = fileUri.getPath();
         if (filePath != null) {
 
-            Global.setProfpicOnDisplay(filePath);
+            Util.setProfpicOnDisplay(filePath);
 
-            new UploadFileToServer(getActivity().getApplicationContext(), getActivity()).execute(account.getUsername(), "picture", filePath);
+            new UploadFile(getActivity().getApplicationContext(), getActivity()).execute(account.getUsername(), "picture", filePath);
         }
         else {
 //            Display an error message
@@ -601,11 +508,11 @@ public class ProfileFragment extends Fragment {
 //            Retrieve data on return
             cropIntent.putExtra("return-data", true);
 //            Get the uri
-            fileUri = Global.getOutputMediaFileUri(Global.MEDIA_TYPE_IMAGE, account.getUsername());
+            fileUri = Util.getOutputMediaFileUri(Util.MEDIA_TYPE_IMAGE, account.getUsername());
 //            To store the image
             cropIntent.putExtra(MediaStore.EXTRA_OUTPUT, fileUri);
 //            Start the activity - we handle returning in onActivityResult
-            startActivityForResult(cropIntent, Global.IMAGE_CROP_REQUEST_CODE);
+            startActivityForResult(cropIntent, Util.IMAGE_CROP_REQUEST_CODE);
 
         }
         catch(ActivityNotFoundException anfe){

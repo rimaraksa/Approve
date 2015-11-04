@@ -5,7 +5,6 @@ import android.app.AlertDialog;
 import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.content.res.TypedArray;
 import android.graphics.Bitmap;
 import android.graphics.Typeface;
 import android.net.Uri;
@@ -20,7 +19,6 @@ import android.text.TextWatcher;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -29,17 +27,14 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.rimaraksa.approve.Adapter.CountryCodeAdapter;
-import com.example.rimaraksa.approve.DatabaseConnection.Signup;
-import com.example.rimaraksa.approve.DatabaseConnection.UploadFileToServer;
-import com.example.rimaraksa.approve.Global;
+import com.example.rimaraksa.approve.ServerConnection.UploadFile;
+import com.example.rimaraksa.approve.Util;
 import com.example.rimaraksa.approve.Model.Account;
-import com.example.rimaraksa.approve.Model.Contract;
 import com.example.rimaraksa.approve.Model.Country;
 import com.example.rimaraksa.approve.R;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Locale;
 
 /**
@@ -63,11 +58,9 @@ public class SignupActivity extends ActionBarActivity  {
     private ListView lvCountryCode;
     private CountryCodeAdapter adapter;
 
-    private ArrayList<String> countryNameList = new ArrayList<String>();
-    private ArrayList<String> countryCodeList = new ArrayList<String>();
-    private ArrayList<String> countryCodePhoneList = new ArrayList<String>();
+
     private ArrayList<Country> countryList = new ArrayList<Country>();
-    private AlertDialog ad;
+    private AlertDialog adChangeCountryCode;
 
     private Uri fileUri;
 
@@ -106,7 +99,7 @@ public class SignupActivity extends ActionBarActivity  {
         ivSignature.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 if (!isDeviceSupportCamera()) {
-                    Global.cameraError(activity, 0);
+                    Util.cameraError(activity, 0);
                 }
                 else {
                     captureImage();
@@ -125,19 +118,21 @@ public class SignupActivity extends ActionBarActivity  {
                 password = tfPassword1.getText().toString();
                 confirmPassword = tfPassword2.getText().toString();
 
-
                 if (name.equals("") || nric.equals("") || phone.equals("") || username.equals("") || password.equals("") || confirmPassword.equals("")) {
-                    Global.signupError(activity, 0);
+                    Util.signupError(activity, 0);
                 }
                 else if (!password.equals(confirmPassword)) {
                     //popup message
-                    Global.signupError(activity, 1);
+                    Util.signupError(activity, 1);
+                }
+                else if(!Util.isPasswordValid(password)){
+                    Util.signupError(activity, 2);
                 }
                 else if(!signatureRegistrationDone){
-                    Global.signupError(activity, 2);
+                    Util.signupError(activity, 3);
                 }
                 else {
-                    String editedPhone = Global.getEditedPhoneNumber(bCountryCode.getText() + " " + phone);
+                    String editedPhone = Util.getEditedPhoneNumber(bCountryCode.getText() + " " + phone);
                     phone = editedPhone;
                     launchSignupActivity();
 
@@ -173,21 +168,23 @@ public class SignupActivity extends ActionBarActivity  {
 
     }
 
+
+
 //    For capturing signature
 
     private void captureImage(){
         Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        startActivityForResult(intent, Global.CAMERA_CAPTURE_IMAGE_REQUEST_CODE);
+        startActivityForResult(intent, Util.CAMERA_CAPTURE_IMAGE_REQUEST_CODE);
     }
 
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if(resultCode == RESULT_OK){
-            if(requestCode == Global.CAMERA_CAPTURE_IMAGE_REQUEST_CODE) {
+            if(requestCode == Util.CAMERA_CAPTURE_IMAGE_REQUEST_CODE) {
                 fileUri = data.getData();
                 performCrop();
 
             }
-            else if(requestCode == Global.IMAGE_CROP_REQUEST_CODE){
+            else if(requestCode == Util.IMAGE_CROP_REQUEST_CODE){
 //                launchSignupActivity();
 
                 Bundle extras = data.getExtras();
@@ -212,7 +209,11 @@ public class SignupActivity extends ActionBarActivity  {
             File file = new File(filePath);
             profpic = signature = file.getName();
             Account account = new Account(name, nric, phone, username, password, profpic, signature);
-            new UploadFileToServer(this, activity, account).execute(username, "signature", filePath);
+
+            new UploadFile(this, activity, account).execute(username, "signature", filePath);
+
+
+
 //            new Signup(this).execute(name, nric, phone, email, username, password, filePath);
 //        }
 //        else{
@@ -250,11 +251,11 @@ public class SignupActivity extends ActionBarActivity  {
 //            Retrieve data on return
             cropIntent.putExtra("return-data", true);
 //            Get the uri
-            fileUri = Global.getOutputMediaFileUri(Global.MEDIA_TYPE_SIGNATURE, username);
+            fileUri = Util.getOutputMediaFileUri(Util.MEDIA_TYPE_SIGNATURE, username);
 //            To store the image
             cropIntent.putExtra(MediaStore.EXTRA_OUTPUT, fileUri);
 //            Start the activity - we handle returning in onActivityResult
-            startActivityForResult(cropIntent, Global.IMAGE_CROP_REQUEST_CODE);
+            startActivityForResult(cropIntent, Util.IMAGE_CROP_REQUEST_CODE);
 
         }
         catch(ActivityNotFoundException anfe){
@@ -305,23 +306,20 @@ public class SignupActivity extends ActionBarActivity  {
 
 
         // Showing Alert Message
-        ad = alertDialog.show();
+        adChangeCountryCode = alertDialog.show();
 
     }
 
     private void populateLVCountryCode(View view) {
         //build adapter
+
         String[] countryNames = getResources().getStringArray(R.array.country_names);
         String[] countryCodes = getResources().getStringArray(R.array.country_codes);
-        String[] countryCodePhones = getResources().getStringArray(R.array.country_phone_codes);
-
-        countryNameList = new ArrayList<String>(Arrays.asList(countryNames));
-        countryCodeList = new ArrayList<String>(Arrays.asList(countryCodes));
-        countryCodePhoneList = new ArrayList<String>(Arrays.asList(countryCodePhones));
+        String[] countryPhoneCodes = getResources().getStringArray(R.array.country_phone_codes);
 
         for (int i = 0; i < countryCodes.length; i++)
         {
-            Country country = new Country(countryCodes[i], countryCodePhones[i], countryNames[i]);
+            Country country = new Country(countryCodes[i], countryPhoneCodes[i], countryNames[i]);
             // Binds all strings into an array
             countryList.add(country);
         }
@@ -363,9 +361,10 @@ public class SignupActivity extends ActionBarActivity  {
         lvCountryCode.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                ad.dismiss();
+                adChangeCountryCode.dismiss();
                 String countryCode = countryList.get(position).getCountryCode() + " " + countryList.get(position).getCountryPhoneCode();
                 bCountryCode.setText(countryCode);
+                countryList.clear();
             }
 
         });

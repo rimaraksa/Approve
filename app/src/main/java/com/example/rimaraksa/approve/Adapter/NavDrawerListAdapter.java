@@ -9,7 +9,7 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.example.rimaraksa.approve.Global;
+import com.example.rimaraksa.approve.Util;
 import com.example.rimaraksa.approve.Model.NavDrawerItem;
 import com.example.rimaraksa.approve.R;
 
@@ -53,16 +53,16 @@ public class NavDrawerListAdapter extends BaseAdapter {
 
                 TextView tvName = (TextView) convertView.findViewById(R.id.TVName);
                 TextView tvUsername = (TextView) convertView.findViewById(R.id.TVUsername);
-                tvName.setText(Global.account.getName());
-                tvUsername.setText("[" + Global.account.getUsername() + "]");
+                tvName.setText(Util.account.getName());
+                tvUsername.setText("[" + Util.account.getUsername() + "]");
 
-                Global.drawerName = tvName;
+                Util.drawerName = tvName;
 
                 if(navDrawerItems.get(position).getIcon() == -1){
                     ImageView ivProfile = (ImageView) convertView.findViewById(R.id.IVProfile);
-                    ivProfile.setImageBitmap(Global.accountProfpicBitmap);
+                    ivProfile.setImageBitmap(Util.accountProfpicBitmap);
 
-                    Global.drawerProfpic = ivProfile;
+                    Util.drawerProfpic = ivProfile;
                 }
                 else{
                     ImageView ivProfile = (ImageView) convertView.findViewById(R.id.IVProfile);

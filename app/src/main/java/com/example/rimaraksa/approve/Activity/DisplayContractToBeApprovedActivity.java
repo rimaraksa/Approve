@@ -2,13 +2,10 @@ package com.example.rimaraksa.approve.Activity;
 
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.Typeface;
-import android.media.MediaMetadataRetriever;
 import android.net.Uri;
 import android.provider.MediaStore;
 import android.support.v4.app.NavUtils;
@@ -22,16 +19,13 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.rimaraksa.approve.DatabaseConnection.Login;
-import com.example.rimaraksa.approve.DatabaseConnection.UploadFileToServer;
-import com.example.rimaraksa.approve.DatabaseConnection.VerifySignature;
-import com.example.rimaraksa.approve.Global;
+import com.example.rimaraksa.approve.ServerConnection.VerifySignature;
+import com.example.rimaraksa.approve.Util;
 import com.example.rimaraksa.approve.Model.Contract;
 import com.example.rimaraksa.approve.R;
 
@@ -44,7 +38,7 @@ public class DisplayContractToBeApprovedActivity extends ActionBarActivity{
     private Toolbar mToolbar;
 
     private Contract contract;
-    private String senderName, senderPhone;
+    private String senderName, senderUsername, senderPhone;
     private Bitmap senderProfpic;
     private Uri fileUri;
 
@@ -68,11 +62,12 @@ public class DisplayContractToBeApprovedActivity extends ActionBarActivity{
         mToolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(mToolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setTitle("Waiting Inbox");
+        getSupportActionBar().setTitle("Pending Inbox");
 
         contract = (Contract) getIntent().getSerializableExtra("Contract");
         senderProfpic = (Bitmap) getIntent().getParcelableExtra("SenderProfpic");
         senderName = (String) getIntent().getExtras().getString("SenderName");
+        senderUsername = (String) getIntent().getExtras().getString("SenderUsername");
         senderPhone = (String) getIntent().getExtras().getString("SenderPhone");
 
         ivProfileSender = (ImageView) findViewById(R.id.IVProfileSender);
@@ -91,17 +86,17 @@ public class DisplayContractToBeApprovedActivity extends ActionBarActivity{
 
         ivProfileSender.setImageBitmap(senderProfpic);
         tvSenderName.setText(senderName);
-        tvSenderUsername.setText(contract.getSender());
-        tvReceiver.setText(Global.account.getName() + " [" + Global.account.getUsername() + "]");
+        tvSenderUsername.setText(senderUsername);
+        tvReceiver.setText(Util.account.getName() + " [" + Util.account.getUsername() + "]");
         tvSubject.setText(contract.getSubject());
         tvBody.setText(contract.getBody());
-        tvDate.setText(Global.getTimeDetailToDisplayFromDateTime(contract.getDateRequest()));
+        tvDate.setText(Util.getTimeDetailToDisplayFromDateTime(contract.getDateRequest()));
 //        tvContact.setText("Contact " + senderName);
 
 
 
         try {
-            tvLocation.setText(Global.latLongToCity(DisplayContractToBeApprovedActivity.this, contract.getLocation()));
+            tvLocation.setText(Util.latLongToCity(DisplayContractToBeApprovedActivity.this, contract.getLocation()));
         }
         catch (IOException e) {
             e.printStackTrace();
@@ -326,7 +321,7 @@ public class DisplayContractToBeApprovedActivity extends ActionBarActivity{
                 tvApprove.setTypeface(null, Typeface.NORMAL);
                 ad.dismiss();
                 if (!isDeviceSupportCamera()) {
-                    Global.cameraError(activity, 0);
+                    Util.cameraError(activity, 0);
                 } else {
                     recordVideo();
                 }
@@ -428,6 +423,7 @@ public class DisplayContractToBeApprovedActivity extends ActionBarActivity{
                 i.putExtra("Contract", contract);
                 i.putExtra("SenderProfpic", senderProfpic);
                 i.putExtra("SenderName", senderName);
+                i.putExtra("SenderUsername", senderUsername);
                 startActivity(i);
 
             }
@@ -460,17 +456,16 @@ public class DisplayContractToBeApprovedActivity extends ActionBarActivity{
      */
     private void recordVideo(){
         Intent intent = new Intent(MediaStore.ACTION_VIDEO_CAPTURE);
-        fileUri = Global.getOutputMediaFileUri(Global.MEDIA_TYPE_VIDEO, contract.getContractKey());
+        fileUri = Util.getOutputMediaFileUri(Util.MEDIA_TYPE_VIDEO, contract.getContractKey());
 
-        // Set video quality
+//        Set video quality
         intent.putExtra(MediaStore.EXTRA_VIDEO_QUALITY, 1);
-
-        intent.putExtra(MediaStore.EXTRA_OUTPUT, fileUri); // set the image file name
-
-        // Start the video capture Intent
-        startActivityForResult(intent, Global.CAMERA_CAPTURE_VIDEO_REQUEST_CODE);
-
+//        Set the image file name
+        intent.putExtra(MediaStore.EXTRA_OUTPUT, fileUri);
+//        Start the video capture Intent
+        startActivityForResult(intent, Util.CAMERA_CAPTURE_VIDEO_REQUEST_CODE);
     }
+
 
     /**
      * Receiving activity result method will be called after closing the camera
@@ -478,21 +473,18 @@ public class DisplayContractToBeApprovedActivity extends ActionBarActivity{
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 
-        System.out.println("DONT FORGET TO DELETE THIS TEST");
-//        resultCode = RESULT_CANCELED;
-        if (requestCode == Global.CAMERA_CAPTURE_VIDEO_REQUEST_CODE) {
-
+        if (requestCode == Util.CAMERA_CAPTURE_VIDEO_REQUEST_CODE) {
             if (resultCode == RESULT_OK) {
 //                Video successfully recorded
                 launchUploadActivity(false);
             }
             else if (resultCode == RESULT_CANCELED) {
-                // User cancelled recording
-                Toast.makeText(getApplicationContext(), "Video recording is cancelled!", Toast.LENGTH_SHORT).show();
+//                User cancelled recording
+                Toast.makeText(getApplicationContext(), "Video recording is cancelled.", Toast.LENGTH_SHORT).show();
             }
             else {
-                // Failed to record video
-                Toast.makeText(getApplicationContext(), "Sorry! Failed to record video!", Toast.LENGTH_SHORT).show();
+//                Failed to record video
+                Toast.makeText(getApplicationContext(), "Sorry, failed to record video.", Toast.LENGTH_SHORT).show();
             }
         }
     }
@@ -500,7 +492,8 @@ public class DisplayContractToBeApprovedActivity extends ActionBarActivity{
     private void launchUploadActivity(boolean isImage){
         String filePath = fileUri.getPath();
         if (filePath != null) {
-            Bitmap videoFrame = Global.getVideoFrame(filePath);
+            System.out.println("Filepath on DisplayContractToBeApproved: " + filePath);
+            Bitmap videoFrame = Util.getVideoFrame(filePath);
             new VerifySignature(this, activity, contract, videoFrame).execute(filePath);
         }
         else {

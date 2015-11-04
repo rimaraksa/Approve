@@ -1,20 +1,6 @@
 package com.example.rimaraksa.approve.Unused;
 
-import android.app.Activity;
 import android.app.Fragment;
-import android.os.Bundle;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.ListView;
-
-import com.example.rimaraksa.approve.DatabaseConnection.DisplayContractList;
-import com.example.rimaraksa.approve.Global;
-import com.example.rimaraksa.approve.Model.Account;
-import com.example.rimaraksa.approve.Model.Contract;
-import com.example.rimaraksa.approve.R;
-
-import java.util.ArrayList;
 
 public class OutboxFragment extends Fragment {
 //

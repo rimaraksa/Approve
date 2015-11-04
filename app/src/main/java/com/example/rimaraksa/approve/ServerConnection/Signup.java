@@ -1,21 +1,16 @@
-package com.example.rimaraksa.approve.DatabaseConnection;
+package com.example.rimaraksa.approve.ServerConnection;
 
 import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
 import android.os.AsyncTask;
 import android.widget.Toast;
 
-import com.example.rimaraksa.approve.Activity.DisplayActivity;
-import com.example.rimaraksa.approve.Activity.SignupActivity;
-import com.example.rimaraksa.approve.Global;
-import com.example.rimaraksa.approve.Model.Account;
+import com.example.rimaraksa.approve.Util;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
-import java.io.File;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.net.URL;
@@ -52,11 +47,15 @@ public class Signup extends AsyncTask<String,Void,String> {
             profpic = (String)arg0[5];
             signature = (String)arg0[6];
 
-            String link = Global.linkSignup;
+            String localPart = Util.getLocalPartFromEmail(username);
+            System.out.println("Local Part: " + localPart);
+
+            String link = Util.linkSignup;
             String data  = URLEncoder.encode("name", "UTF-8") + "=" + URLEncoder.encode(name, "UTF-8");
             data  += "&" + URLEncoder.encode("nric", "UTF-8") + "=" + URLEncoder.encode(nric, "UTF-8");
             data  += "&" + URLEncoder.encode("phone", "UTF-8") + "=" + URLEncoder.encode(phone, "UTF-8");
             data  += "&" + URLEncoder.encode("username", "UTF-8") + "=" + URLEncoder.encode(username, "UTF-8");
+            data  += "&" + URLEncoder.encode("localPart", "UTF-8") + "=" + URLEncoder.encode(localPart, "UTF-8");
             data += "&" + URLEncoder.encode("password", "UTF-8") + "=" + URLEncoder.encode(password, "UTF-8");
             data += "&" + URLEncoder.encode("profpic", "UTF-8") + "=" + URLEncoder.encode(profpic, "UTF-8");
             data += "&" + URLEncoder.encode("signature", "UTF-8") + "=" + URLEncoder.encode(signature, "UTF-8");
@@ -95,18 +94,25 @@ public class Signup extends AsyncTask<String,Void,String> {
         System.out.println("Signup Result: " + result);
         try{
             JSONObject jsonData = new JSONObject(result);
-
-            if(jsonData.getBoolean("exists")){
-                Toast pass = Toast.makeText(context, "Username is already registered!", Toast.LENGTH_SHORT);
-                pass.show();
-            }
-            else if(jsonData.getBoolean("signatureUploadFails")){
-                Toast pass = Toast.makeText(context, "Failed contacting server, please try again later.", Toast.LENGTH_SHORT);
-                pass.show();
+            if(jsonData.getBoolean("train")){
+                if(jsonData.getBoolean("exists")){
+                    Toast pass = Toast.makeText(context, "Username is already registered!", Toast.LENGTH_LONG);
+                    pass.show();
+                }
+                else if(jsonData.getBoolean("signatureUploadFails")){
+                    Toast pass = Toast.makeText(context, "Failed contacting server, please try again later.", Toast.LENGTH_LONG);
+                    pass.show();
+                }
+                else{
+                    new Login(context, activity).execute(username, password);
+                }
             }
             else{
-                new Login(context, activity).execute(username, password);
+                Toast pass = Toast.makeText(context, "No face detected in the image!", Toast.LENGTH_LONG);
+                pass.show();
             }
+
+
         }
         catch (JSONException e){
             e.printStackTrace();

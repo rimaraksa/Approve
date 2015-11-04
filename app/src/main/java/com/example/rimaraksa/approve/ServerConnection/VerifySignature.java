@@ -1,19 +1,14 @@
-package com.example.rimaraksa.approve.DatabaseConnection;
+package com.example.rimaraksa.approve.ServerConnection;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
-import android.content.Intent;
 import android.graphics.Bitmap;
-import android.media.MediaMetadataRetriever;
 import android.os.AsyncTask;
 import android.util.Base64;
 import android.widget.Toast;
 
-import com.example.rimaraksa.approve.Activity.DisplayActivity;
-import com.example.rimaraksa.approve.DatabaseConnection.Signup;
-import com.example.rimaraksa.approve.Global;
-import com.example.rimaraksa.approve.Model.Account;
+import com.example.rimaraksa.approve.Util;
 import com.example.rimaraksa.approve.Model.Contract;
 
 import org.apache.http.HttpEntity;
@@ -22,8 +17,6 @@ import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.mime.MultipartEntity;
-import org.apache.http.entity.mime.content.ByteArrayBody;
-import org.apache.http.entity.mime.content.FileBody;
 import org.apache.http.entity.mime.content.StringBody;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.util.EntityUtils;
@@ -31,7 +24,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.ByteArrayOutputStream;
-import java.io.File;
 import java.io.IOException;
 
 /**
@@ -66,7 +58,7 @@ public class VerifySignature extends AsyncTask<String,Void,String> {
         filePath = (String) arg0[0];
 
         HttpClient httpclient = new DefaultHttpClient();
-        HttpPost httppost = new HttpPost(Global.linkVerifySignature);
+        HttpPost httppost = new HttpPost(Util.linkVerifySignature);
 
         try {
             MultipartEntity multipartEntity = new MultipartEntity();
@@ -78,7 +70,7 @@ public class VerifySignature extends AsyncTask<String,Void,String> {
 
 //            Parameters to pass
             multipartEntity.addPart("data", new StringBody(encodedImage));
-            multipartEntity.addPart("username", new StringBody(Global.account.getUsername()));
+            multipartEntity.addPart("username", new StringBody(Util.getLocalPartFromEmail(Util.account.getUsername())));
 
             httppost.setEntity(multipartEntity);
 
@@ -124,7 +116,10 @@ public class VerifySignature extends AsyncTask<String,Void,String> {
                 if (jsonData.getBoolean("matched")) {
                     Toast pass = Toast.makeText(context, "Signature is matched!", Toast.LENGTH_SHORT);
                     pass.show();
+
+                    System.out.println("Filepath on SMSOTP: " + filePath);
                     new SMSOTP(context, activity, contract).execute(filePath);
+
                     System.out.println("ENTER SMSOTP");
 //                    new UploadFileToServer(context, activity).execute(contract.getContractKey(), "video", filePath);
                 }

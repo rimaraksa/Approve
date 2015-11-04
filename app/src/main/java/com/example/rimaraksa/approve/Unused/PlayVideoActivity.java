@@ -7,8 +7,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.VideoView;
 
-import com.example.rimaraksa.approve.Global;
-import com.example.rimaraksa.approve.Model.Account;
+import com.example.rimaraksa.approve.Util;
 import com.example.rimaraksa.approve.Model.Contract;
 import com.example.rimaraksa.approve.R;
 
@@ -32,7 +31,7 @@ public class PlayVideoActivity extends ActionBarActivity {
         filePath = getIntent().getStringExtra("FilePath");
         vvApprovalVideo = (VideoView) findViewById(R.id.VVApprovalVideo);
 
-        Global.previewVideo(vvApprovalVideo, filePath);
+        Util.previewVideo(vvApprovalVideo, filePath);
 
 
     }

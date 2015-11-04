@@ -13,13 +13,10 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.example.rimaraksa.approve.DatabaseConnection.Login;
-import com.example.rimaraksa.approve.Global;
+import com.example.rimaraksa.approve.ServerConnection.Login;
+import com.example.rimaraksa.approve.Util;
 import com.example.rimaraksa.approve.R;
-
-import org.w3c.dom.Text;
 
 
 public class LoginActivity extends ActionBarActivity {
@@ -123,7 +120,7 @@ public class LoginActivity extends ActionBarActivity {
                 password = tfPassword.getText().toString();
 
                 if(username.equals("") || password.equals("")){
-                    Global.loginError(activity, 0);
+                    Util.loginError(activity, 0);
                 }
                 else{
 
@@ -161,6 +158,14 @@ public class LoginActivity extends ActionBarActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onBackPressed() {
+        Intent backtoHome = new Intent(Intent.ACTION_MAIN);
+        backtoHome.addCategory(Intent.CATEGORY_HOME);
+        backtoHome.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(backtoHome);
     }
 
 }

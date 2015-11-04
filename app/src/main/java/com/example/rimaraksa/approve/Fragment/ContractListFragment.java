@@ -9,13 +9,12 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ListView;
 
-import com.example.rimaraksa.approve.DatabaseConnection.DisplayContractList;
-import com.example.rimaraksa.approve.Global;
+import com.example.rimaraksa.approve.ServerConnection.GetContractList;
 import com.example.rimaraksa.approve.R;
 
 public class ContractListFragment extends Fragment {
 
-    private String type, status, account_id;
+    private String type, status;
 
     //    Components on layout
     private ListView lvContract;
@@ -34,7 +33,6 @@ public class ContractListFragment extends Fragment {
         if (bundle != null) {
             type = getArguments().getString("Type");
             status = getArguments().getString("Status");
-            account_id = Global.account.getAccount_id() + "";
 //            account_id = getArguments().getString("AccountID");
         }
 
@@ -43,10 +41,10 @@ public class ContractListFragment extends Fragment {
         lvContract = (ListView) view.findViewById(R.id.LVContract);
 
         if(type.equals("inbox")){
-            new DisplayContractList(getActivity().getApplicationContext(), getActivity(), lvContract, tfSearchContract).execute(account_id, "receiver", "sender", status);
+            new GetContractList(getActivity().getApplicationContext(), getActivity(), lvContract, tfSearchContract).execute("receiver", "sender", status);
         }
         else{
-            new DisplayContractList(getActivity().getApplicationContext(), getActivity(), lvContract, tfSearchContract).execute(account_id, "sender", "receiver", status);
+            new GetContractList(getActivity().getApplicationContext(), getActivity(), lvContract, tfSearchContract).execute("sender", "receiver", status);
         }
 
         return view;

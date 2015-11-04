@@ -3,12 +3,8 @@ package com.example.rimaraksa.approve;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
-import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Canvas;
-import android.graphics.Path;
-import android.graphics.Rect;
 import android.location.Address;
 import android.location.Geocoder;
 import android.media.MediaMetadataRetriever;
@@ -20,25 +16,15 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 import android.widget.VideoView;
 
 import com.example.rimaraksa.approve.Adapter.NavDrawerListAdapter;
 import com.example.rimaraksa.approve.Model.Account;
-import com.example.rimaraksa.approve.Model.Contract;
-import com.example.rimaraksa.approve.Model.NavDrawerItem;
 
-import java.io.BufferedInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.net.URL;
-import java.net.URLConnection;
 import java.security.SecureRandom;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -47,9 +33,12 @@ import java.util.Random;
 /**
  * Created by rimaraksa on 11/6/15.
  */
-public class Global {
+public class Util {
     public static final String DIRECTORY_NAME = "Approve";
-    public static final String link = "http://172.20.33.119/~rimaraksa/android_connect/";
+
+//    public static final String link = "http://172.20.33.119/~rimaraksa/android_connect/";
+    public static final String link = "http://approve.comuf.com/android_connect/";
+//    public static final String link = "http://approve.grn.cc/android_connect/";
 
 //    Account Management
     public static final String linkLogin = link + "login.php";
@@ -62,6 +51,7 @@ public class Global {
     public static final String linkRejectContract = link + "reject_contract.php";
     public static final String linkVerifySignature = link + "verify_signature.php";
     public static final String linkSMSOTP = link + "sms_otp.php";
+    public static final String linkEmailNotification = link + "email.php";
 
 //    Others
     public static final String linkUploadFileToServer = link + "upload_file.php";
@@ -73,7 +63,7 @@ public class Global {
     public static final int CAMERA_CAPTURE_IMAGE_REQUEST_CODE = 100;
     public static final int CAMERA_CAPTURE_VIDEO_REQUEST_CODE = 200;
     public static final int IMAGE_CROP_REQUEST_CODE = 300;
-    public static final int TIMEOUT_CONNECTION = 5000;    //5sec
+    public static final int TIMEOUT_CONNECTION = 50000;    //5sec
     public static final int TIMEOUT_SOCKET = 30000;   //30sec
 
 //    Global variables for an account
@@ -87,12 +77,23 @@ public class Global {
     public static TextView drawerName;
 
 //    Counters for each contract category
-    public static int waitingInboxCount = 0;
+    public static int pendingInboxCount = 0;
     public static int approvedInboxCount = 0;
     public static int rejectedInboxCount = 0;
-    public static int waitingOutboxCount = 0;
+    public static int pendingOutboxCount = 0;
     public static int approvedOutboxCount = 0;
     public static int rejectedOutboxCount = 0;
+
+//    Ids of each item in the drawer
+    public static int profile_id = 0;
+    public static int inbox_id = 1;
+    public static int pendingInbox_id = 2;
+    public static int approvedInbox_id = 3;
+    public static int rejectedInbox_id = 4;
+    public static int outbox_id = 5;
+    public static int pendingOutbox_id = 6;
+    public static int approvedOutbox_id = 7;
+    public static int rejectedOutbox_id = 8;
 
 
 //    Time Management
@@ -176,7 +177,7 @@ public class Global {
 
         try{
             String yearMonthWeekOfDateTime = dateFormat.format(dateTimeFormat.parse(dateTime));
-            return yearMonthWeekOfDateTime.equals(Global.getYearMonthWeek());
+            return yearMonthWeekOfDateTime.equals(Util.getYearMonthWeek());
         }
         catch(Exception e){
             e.printStackTrace();
@@ -191,7 +192,7 @@ public class Global {
 
         try{
             String yearMonthDayOfDateTime = dateFormat.format(dateTimeFormat.parse(dateTime));
-            return yearMonthDayOfDateTime.equals(Global.getYearMonthDay());
+            return yearMonthDayOfDateTime.equals(Util.getYearMonthDay());
         }
         catch(Exception e){
             e.printStackTrace();
@@ -205,12 +206,12 @@ public class Global {
     public static File getOutputMediaFile(int type, String key) {
 
         // External sdcard location
-        File mediaStorageDir = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES),Global.DIRECTORY_NAME);
+        File mediaStorageDir = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES), Util.DIRECTORY_NAME);
 
         // Create the storage directory if it does not exist
         if (!mediaStorageDir.exists()) {
             if (!mediaStorageDir.mkdirs()) {
-                Log.d(Global.DIRECTORY_NAME, "Oops! Failed to create! " + Global.DIRECTORY_NAME + " directory");
+                Log.d(Util.DIRECTORY_NAME, "Oops! Failed to create! " + Util.DIRECTORY_NAME + " directory");
                 return null;
             }
         }
@@ -219,14 +220,17 @@ public class Global {
         String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(new Date());
         File mediaFile;
 
-        if (type == Global.MEDIA_TYPE_VIDEO) {
+        if (type == Util.MEDIA_TYPE_VIDEO) {
+            System.out.println("mediatypevideo: " + key);
             mediaFile = new File(mediaStorageDir.getPath() + File.separator + "VID_" + key + "_" + timeStamp + ".mp4");
         }
-        else if(type == Global.MEDIA_TYPE_IMAGE){
-            mediaFile = new File(mediaStorageDir.getPath() + File.separator + "IMG_" + key + "_" + timeStamp + ".jpg");
+        else if(type == Util.MEDIA_TYPE_IMAGE){
+            System.out.println("mediatypeimage: " + key);
+            mediaFile = new File(mediaStorageDir.getPath() + File.separator + "IMG_" + getLocalPartFromEmail(key) + "_" + timeStamp + ".jpg");
         }
-        else if(type == Global.MEDIA_TYPE_SIGNATURE){
-            mediaFile = new File(mediaStorageDir.getPath() + File.separator + "SIG_" + key + "_" + timeStamp + ".jpg");
+        else if(type == Util.MEDIA_TYPE_SIGNATURE){
+            System.out.println("mediatypesignature: " + key);
+            mediaFile = new File(mediaStorageDir.getPath() + File.separator + "SIG_" + getLocalPartFromEmail(key) + "_" + timeStamp + ".jpg");
         }
         else{
             return null;
@@ -239,8 +243,9 @@ public class Global {
      * Creating file uri to store image/video
      */
     public static Uri getOutputMediaFileUri(int type, String key) {
-        return Uri.fromFile(Global.getOutputMediaFile(type, key));
+        return Uri.fromFile(Util.getOutputMediaFile(type, key));
     }
+
 
     public static void previewVideo(VideoView vidPreview, String filePath) {
         vidPreview.setVisibility(View.VISIBLE);
@@ -249,7 +254,7 @@ public class Global {
         vidPreview.start();
     }
 
-//    Location Management
+    //    Location Management
     public static String latLongToCity(Context context, String location) throws IOException {
         String city = null;
         String postalCode = null;
@@ -328,7 +333,7 @@ public class Global {
         File file = new File(filePath);
 
 //        Set the profpic of the account
-        Global.account.setProfpic(file.getName());
+        Util.account.setProfpic(file.getName());
     }
 
     public static File bitmapToFile(String name, Bitmap bitmap){
@@ -354,14 +359,14 @@ public class Global {
         try {
             retriever.setDataSource(filePath);
             return retriever.getFrameAtTime();
-        } catch (IllegalArgumentException ex) {
-            ex.printStackTrace();
         } catch (RuntimeException ex) {
             ex.printStackTrace();
-        } finally {
+        }
+        finally {
             try {
                 retriever.release();
-            } catch (RuntimeException ex) {
+            }
+            catch (RuntimeException ignored) {
             }
         }
         return null;
@@ -428,9 +433,14 @@ public class Global {
                 break;
             case 2:
                 tvErrorTitle.setText("Oops! Signup Failed");
-                tvError.setText("Please take your facial picture for your signature to signup.");
+                tvError.setText("Your password must contain at least 8 characters and is a mix of letters and numbers.");
+                bOk.setText("Try Again");
                 break;
             case 3:
+                tvErrorTitle.setText("Oops! Signup Failed");
+                tvError.setText("Please take your portrait as your signature to signup.");
+                break;
+            case 4:
                 tvErrorTitle.setText("Connection Error");
                 tvError.setText("While signing you up, there was an error connecting to the server.");
                 bOk.setText("Try Again");
@@ -497,8 +507,11 @@ public class Global {
             case 2:
                 tvError.setText("The new password and password confirmation do not match.");
                 break;
+            case 3:
+                tvError.setText("Your password must contain at least 8 characters and is a mix of letters and numbers.");
+                break;
             default:
-                tvError.setText("To sign in into your Path account securely, please type a good, solid password to yourself.");
+                tvError.setText("To sign in into your Approve account securely, please type a good, solid password to yourself.");
         }
 
         final AlertDialog ad = alertDialog.show();
@@ -657,6 +670,40 @@ public class Global {
         });
     }
 
+    public static void createContractError(Activity activity, int errorId){
+        final AlertDialog.Builder alertDialog = new AlertDialog.Builder(activity);
+        final View view = activity.getLayoutInflater().inflate(R.layout.dialog_create_contract_error, null);
+        alertDialog.setView(view);
+
+        TextView tvError = (TextView) view.findViewById(R.id.TVError);
+        Button bOk = (Button) view.findViewById(R.id.BOk);
+
+
+        switch (errorId) {
+            case 0:
+                tvError.setText("Please fill in all fields to create a new contract.");
+                break;
+            case 1:
+                tvError.setText("You cannot send a contract to yourself.");
+                break;
+            case 2:
+                tvError.setText("The receiver does not exist, please make sure the receiver's username is correct.");
+                break;
+            default:
+                tvError.setText("While sending the contract, there was an error connecting to the server.");
+        }
+
+        final AlertDialog ad = alertDialog.show();
+
+        bOk.setOnClickListener(new View.OnClickListener() {
+
+            public void onClick(View v) {
+//                Upload a profile picture from camera/album
+                ad.dismiss();
+            }
+        });
+    }
+
     public static String getEditedPhoneNumber(String phone)
     {
         String editedPhoneNumber = "";
@@ -668,6 +715,42 @@ public class Global {
         }
         return editedPhoneNumber;
 
+    }
+
+    public static String getLocalPartFromEmail(String email){
+        String localPart = "";
+        if(email != null){
+            for(int i = 0; i < email.length() && email.charAt(i) != '@'; i++){
+                localPart += email.charAt(i);
+            }
+        }
+
+        return localPart;
+    }
+
+    public static boolean isPasswordValid(String password){
+        boolean hasDigit = false;
+        boolean hasLetter = false;
+
+        if(password.length() < 8){
+            return false;
+        }
+        else{
+            for(int i = 0; i < password.length(); i++){
+                if(!hasDigit && Character.isDigit(password.charAt(i))){
+                    hasDigit = true;
+                }
+                else if(!hasLetter && Character.isLetter(password.charAt(i))){
+                    hasLetter = true;
+                }
+                if(hasDigit && hasLetter){
+                    return true;
+                }
+
+            }
+        }
+
+        return false;
     }
 
 

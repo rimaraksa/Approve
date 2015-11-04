@@ -1,4 +1,4 @@
-package com.example.rimaraksa.approve.DatabaseConnection;
+package com.example.rimaraksa.approve.ServerConnection;
 
 /**
  * Created by rimaraksa on 16/6/15.
@@ -6,17 +6,18 @@ package com.example.rimaraksa.approve.DatabaseConnection;
 
 
 import android.app.Activity;
-import android.app.AlertDialog;
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.widget.Toast;
 //import org.apache.http.entity.mime.MultipartEntity;
 
 import com.example.rimaraksa.approve.Activity.DisplayActivity;
-import com.example.rimaraksa.approve.Global;
+import com.example.rimaraksa.approve.Model.Contract;
+import com.example.rimaraksa.approve.Util;
 import com.example.rimaraksa.approve.Model.Account;
+import com.example.rimaraksa.approve.Model.NavDrawerItem;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -38,10 +39,11 @@ import java.io.IOException;
 /**
  * Uploading the file to server
  * */
-public class UploadFileToServer extends AsyncTask<String,Void,String> {
+public class UploadFile extends AsyncTask<String,Void,String> {
     private Context context;
     private Activity activity;
     private Account account;
+    private Contract contract;
 
     private String key, fileType, filePath, targetPath;
 
@@ -50,16 +52,23 @@ public class UploadFileToServer extends AsyncTask<String,Void,String> {
     // Progress dialog type (0 - for Horizontal progress bar)
     public static final int progress_bar_type = 0;
 
-    public UploadFileToServer(Context context, Activity activity) {
+    public UploadFile(Context context, Activity activity) {
         this.context = context;
         this.activity = activity;
     }
 
 //    Upload for the first time, upload signature
-    public UploadFileToServer(Context context, Activity activity, Account account) {
+    public UploadFile(Context context, Activity activity, Account account) {
         this.context = context;
         this.activity = activity;
         this.account = account;
+    }
+
+//    Upload for contract approval
+    public UploadFile(Context context, Activity activity, Contract contract) {
+        this.context = context;
+        this.activity = activity;
+        this.contract = contract;
     }
 
     protected void onPreExecute(){
@@ -85,13 +94,18 @@ public class UploadFileToServer extends AsyncTask<String,Void,String> {
             targetPath = "signatures/";
         }
 
-        System.out.println("TYPE OF THE FILE TO UPLOAD = " + fileType);
+        System.out.println("Target Path: " + targetPath);
+
+        System.out.println("TYPE OF THE FILE TO UPLOAD: " + fileType);
 
 //        Get the file
         file = new File(filePath);
 
+        System.out.println("Filepath on UploadFile: " + filePath);
+        System.out.println("File on UploadFile: " + file);
+
         HttpClient httpclient = new DefaultHttpClient();
-        HttpPost httppost = new HttpPost(Global.linkUploadFileToServer);
+        HttpPost httppost = new HttpPost(Util.linkUploadFileToServer);
 
         try {
             MultipartEntity multipartEntity = new MultipartEntity();
@@ -101,7 +115,7 @@ public class UploadFileToServer extends AsyncTask<String,Void,String> {
             multipartEntity.addPart("key", new StringBody(key));
             System.out.println("Key: " + key);
             multipartEntity.addPart("fileType", new StringBody(fileType));
-            multipartEntity.addPart("date", new StringBody(Global.getDateTime()));
+            multipartEntity.addPart("date", new StringBody(Util.getDateTime()));
             multipartEntity.addPart("targetPath", new StringBody(targetPath));
 
             httppost.setEntity(multipartEntity);
@@ -142,6 +156,19 @@ public class UploadFileToServer extends AsyncTask<String,Void,String> {
                     new Signup(context, activity).execute(account.getName(), account.getNric(), account.getPhone(), account.getUsername(), account.getPassword(), account.getProfpic(), account.getSignature());
                 }
                 else if(fileType.equals("video")){
+//                    Success to approve a contract
+                    new EmailNotification(context, activity, contract).execute();
+
+                    Util.pendingInboxCount--;
+                    NavDrawerItem navDrawerItem = (NavDrawerItem) Util.drawerAdapter.getItem(Util.pendingInbox_id);
+                    String pendingInboxCount = Integer.toString(Util.pendingInboxCount);
+                    navDrawerItem.setCount(pendingInboxCount);
+
+                    Util.approvedInboxCount++;
+                    navDrawerItem = (NavDrawerItem) Util.drawerAdapter.getItem(Util.approvedInbox_id);
+                    String approvedInboxCount = Integer.toString(Util.approvedInboxCount);
+                    navDrawerItem.setCount(approvedInboxCount);
+
                     Intent i = new Intent(context, DisplayActivity.class);
                     i.putExtra("FromDisplayContractToBeApprovedActivity", true);
                     context.startActivity(i);

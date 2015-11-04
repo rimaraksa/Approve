@@ -7,10 +7,10 @@
     <string name="title_activity_display"></string>
     <string name="title_activity_create_contract">New Contract</string>
     <string name="title_activity_display_contract_list">Display Contract List</string>
-    <string name="title_activity_display_contract_to_be_approved">Waiting Inbox</string>
+    <string name="title_activity_display_contract_to_be_approved">Pending Inbox</string>
     <string name="title_activity_approve">Approve</string>
     <string name="title_activity_reject_contract">Reject Contract</string>
-    <string name="title_activity_display_sent_contract">Waiting Outbox</string>
+    <string name="title_activity_display_sent_contract">Pending Outbox</string>
     <string name="title_activity_display_approved_contract">Display Approved Contract</string>
     <string name="title_activity_display_rejected_contract">Display Rejected Contract</string>
     <string name="title_activity_play_video">Play Video</string>
@@ -29,13 +29,13 @@
         <item>Profile</item>
         <!--<item>Compose contract</item>-->
         <item>Inbox</item>
-        <item>Waiting Inbox</item>
-        <item>Approved Inbox</item>
-        <item>Rejected Inbox</item>
+        <item>Pending</item>
+        <item>Approved</item>
+        <item>Rejected</item>
         <item>Outbox</item>
-        <item>Waiting Outbox</item>
-        <item>Approved Outbox</item>
-        <item>Rejected Outbox</item>
+        <item>Pending</item>
+        <item>Approved</item>
+        <item>Rejected</item>
     </string-array>
 
     <!-- Nav Drawer List Item Icons -->
@@ -74,6 +74,7 @@
     <string name="cancel">Cancel</string>
     <string name="prepare_justification">Prepare Justification</string>
     <string name="search">Search</string>
+    <string name="Uneditable">uneditable</string>
 
     <string-array name="country_codes">
         <item>AD</item>

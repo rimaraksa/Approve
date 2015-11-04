@@ -1,18 +1,15 @@
-package com.example.rimaraksa.approve.DatabaseConnection;
+package com.example.rimaraksa.approve.ServerConnection;
 
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
-import android.support.v4.app.NavUtils;
-import android.support.v4.app.TaskStackBuilder;
 import android.widget.Toast;
 
 import com.example.rimaraksa.approve.Activity.DisplayActivity;
-import com.example.rimaraksa.approve.Activity.DisplayContractToBeApprovedActivity;
-import com.example.rimaraksa.approve.Global;
-import com.example.rimaraksa.approve.Model.Account;
+import com.example.rimaraksa.approve.Util;
 import com.example.rimaraksa.approve.Model.Contract;
+import com.example.rimaraksa.approve.Model.NavDrawerItem;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -31,7 +28,7 @@ public class RejectContract extends AsyncTask<String,Void,String> {
     private Context context;
     private Activity activity;
     private Contract contract;
-    String reasonForRejection;
+    String contract_id, reasonForRejection;
 
 
     public RejectContract(Context context, Activity activity, Contract contract) {
@@ -49,10 +46,11 @@ public class RejectContract extends AsyncTask<String,Void,String> {
         try{
             reasonForRejection = (String)arg0[0];
 
-            String link = Global.linkRejectContract;
-            String data  = URLEncoder.encode("contractKey", "UTF-8") + "=" + URLEncoder.encode(contract.getContractKey(), "UTF-8");
+            contract_id = Integer.toString(contract.getContract_id());
+            String link = Util.linkRejectContract;
+            String data  = URLEncoder.encode("contract_id", "UTF-8") + "=" + URLEncoder.encode(contract_id, "UTF-8");
             data  += "&" + URLEncoder.encode("reasonForRejection", "UTF-8") + "=" + URLEncoder.encode(reasonForRejection, "UTF-8");
-            data  += "&" + URLEncoder.encode("date", "UTF-8") + "=" + URLEncoder.encode(Global.getDateTime(), "UTF-8");
+            data  += "&" + URLEncoder.encode("date", "UTF-8") + "=" + URLEncoder.encode(Util.getDateTime(), "UTF-8");
 
 
             URL url = new URL(link);
@@ -89,37 +87,30 @@ public class RejectContract extends AsyncTask<String,Void,String> {
         try{
             JSONObject jsonData = new JSONObject(result);
 
-            if(!jsonData.getBoolean("exists")){
-                Global.rejectError(activity, 1);
+            if(!jsonData.getBoolean("contract_exists")){
+                Util.rejectError(activity, 1);
 //                Toast pass = Toast.makeText(context, "Contract is not available!", Toast.LENGTH_SHORT);
 //                pass.show();
             }
             else{
-//                Toast pass = Toast.makeText(context, contract.getSubject() + " is successfully rejected!", Toast.LENGTH_SHORT);
-//                pass.show();
+                Util.pendingInboxCount--;
+                NavDrawerItem navDrawerItem = (NavDrawerItem) Util.drawerAdapter.getItem(Util.pendingInbox_id);
+                String pendingInboxCount = Integer.toString(Util.pendingInboxCount);
+                navDrawerItem.setCount(pendingInboxCount);
+
+                Util.rejectedInboxCount++;
+                navDrawerItem = (NavDrawerItem) Util.drawerAdapter.getItem(Util.rejectedInbox_id);
+                String rejectedInboxCount = Integer.toString(Util.rejectedInboxCount);
+                navDrawerItem.setCount(rejectedInboxCount);
+
+                new EmailNotification(context, activity, contract).execute();
+
+                Intent i = new Intent(context, DisplayActivity.class);
+                i.putExtra("FromDisplayContractToBeApprovedActivity", true);
+                context.startActivity(i);
+
+
             }
-//
-//            Intent upIntent = NavUtils.getParentActivityIntent(context);
-//            if (NavUtils.shouldUpRecreateTask(context, upIntent)) {
-//                // This activity is NOT part of this app's task, so create a new task
-//                // when navigating up, with a synthesized back stack.
-//                TaskStackBuilder.create(context)
-//                        // Add all of this activity's parents to the back stack
-//                        .addNextIntentWithParentStack(upIntent)
-//                                // Navigate up to the closest parent
-//                        .startActivities();
-//            }
-//            else {
-//                // This activity is part of this app's task, so simply
-//                // navigate up to the logical parent activity.
-//                upIntent.putExtra("FromDisplayContractToBeApprovedActivity", true);
-//                NavUtils.navigateUpTo(context, upIntent);
-//            }
-
-
-            Intent i = new Intent(context, DisplayActivity.class);
-            i.putExtra("FromDisplayContractToBeApprovedActivity", true);
-            context.startActivity(i);
         }
         catch (JSONException e){
             e.printStackTrace();

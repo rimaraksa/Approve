@@ -1,29 +1,25 @@
 package com.example.rimaraksa.approve.Activity;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.location.Location;
-import android.support.v4.app.NavUtils;
-import android.support.v4.app.TaskStackBuilder;
+import android.provider.Settings;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.rimaraksa.approve.DatabaseConnection.CreateContract;
-import com.example.rimaraksa.approve.Global;
-import com.example.rimaraksa.approve.Model.Account;
+import com.example.rimaraksa.approve.ServerConnection.CreateContract;
+import com.example.rimaraksa.approve.Util;
 import com.example.rimaraksa.approve.R;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
 
 import java.util.UUID;
@@ -32,9 +28,8 @@ import java.util.UUID;
 public class CreateContractActivity extends ActionBarActivity implements GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener {
 
+    private Activity activity;
     private Toolbar mToolbar;
-
-    private Account account = Global.account;
 
     private static final String TAG = CreateContractActivity.class.getSimpleName();
 
@@ -46,14 +41,16 @@ public class CreateContractActivity extends ActionBarActivity implements GoogleA
     private GoogleApiClient mGoogleApiClient;
 
     //    Components on layout
-    private EditText receiverField, subjectField, bodyField;
-    private String receiver, subject, body;
+    private EditText tfReceiverUsername, tfContractSubject, tfContractBody;
+    private String receiverUsername, contractSubject, contractBody;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_contract);
+
+        activity = this;
 
         mToolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(mToolbar);
@@ -64,9 +61,9 @@ public class CreateContractActivity extends ActionBarActivity implements GoogleA
         TextView tvToolbarTitle = (TextView) findViewById(R.id.TVToolbarTitle);
         tvToolbarTitle.setText("New Contract");
 
-        receiverField = (EditText) findViewById(R.id.TFReceiver);
-        subjectField = (EditText) findViewById(R.id.TFSubject);
-        bodyField = (EditText) findViewById(R.id.TFContractBody);
+        tfReceiverUsername = (EditText) findViewById(R.id.TFReceiverUsername);
+        tfContractSubject = (EditText) findViewById(R.id.TFContractSubject);
+        tfContractBody = (EditText) findViewById(R.id.TFContractBody);
 
 
         // We need to check availability of play services
@@ -103,27 +100,28 @@ public class CreateContractActivity extends ActionBarActivity implements GoogleA
     }
 
     public void sendContract() {
-        receiver = receiverField.getText().toString();
-        subject = subjectField.getText().toString();
-        body = bodyField.getText().toString();
+        receiverUsername = tfReceiverUsername.getText().toString();
+        contractSubject = tfContractSubject.getText().toString();
+        contractBody = tfContractBody.getText().toString();
 
         String location = getLocation();
 
-//        Incomplete fields
-        if (receiver.equals("") || subject.equals("") || body.equals("")) {
-            //popup message
-            Toast pass = Toast.makeText(this, "Required fields have not been completed!", Toast.LENGTH_SHORT);
-            pass.show();
-        } else {
-            //insert new contract
+        if (receiverUsername.equals("") || contractSubject.equals("") || contractBody.equals("")) {
+            Util.createContractError(activity, 0);
+        }
+        else if(receiverUsername.equals(Util.account.getUsername())){
+            Util.createContractError(activity, 1);
+        }
+        else {
             String contractKey = UUID.randomUUID().toString();
-            new CreateContract(this, account).execute(contractKey, account.getUsername(), receiver, subject, body, location, "waiting", Global.getDateTime());
+            new CreateContract(this, activity).execute(contractKey, receiverUsername, contractSubject, contractBody, location, "pending", Util.getDateTime());
 
         }
     }
 
     private String getLocation(){
         String location = "0.0;0.0";
+
         mLastLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
 
         if (mLastLocation != null) {

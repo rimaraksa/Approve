@@ -21,7 +21,7 @@ import android.widget.TextView;
 import com.example.rimaraksa.approve.Adapter.NavDrawerListAdapter;
 import com.example.rimaraksa.approve.Fragment.ContractListFragment;
 import com.example.rimaraksa.approve.Fragment.ProfileFragment;
-import com.example.rimaraksa.approve.Global;
+import com.example.rimaraksa.approve.Util;
 import com.example.rimaraksa.approve.Model.Contract;
 import com.example.rimaraksa.approve.Model.NavDrawerItem;
 import com.example.rimaraksa.approve.R;
@@ -55,8 +55,8 @@ public class DisplayActivity extends ActionBarActivity {
 
 //    Id of each view;
     int profile;
-    int inbox, waitingInbox, approvedInbox, rejectedInbox;
-    int outbox, waitingOutbox, approvedOutbox, rejectedOutbox;
+    int inbox, pendingInbox, approvedInbox, rejectedInbox;
+    int outbox, pendingOutbox, approvedOutbox, rejectedOutbox;
 
 
     @Override
@@ -89,11 +89,11 @@ public class DisplayActivity extends ActionBarActivity {
 //        Ids of each item in the drawer
         profile = 0;
         inbox = 1;
-        waitingInbox = 2;
+        pendingInbox = 2;
         approvedInbox = 3;
         rejectedInbox = 4;
         outbox = 5;
-        waitingOutbox = 6;
+        pendingOutbox = 6;
         approvedOutbox = 7;
         rejectedOutbox = 8;
 
@@ -102,24 +102,24 @@ public class DisplayActivity extends ActionBarActivity {
         // Inbox
         navDrawerItems.add(new NavDrawerItem(navMenuTitles[inbox]));    //unclickable
         unclickableNavDrawerItems.add(navDrawerItems.size()-1);
-        // Waiting Inbox
-        navDrawerItems.add(new NavDrawerItem(navMenuTitles[waitingInbox], navMenuIcons.getResourceId(waitingInbox, -1), true, (Global.waitingInboxCount + "")));
+        // Pending Inbox
+        navDrawerItems.add(new NavDrawerItem(navMenuTitles[pendingInbox], navMenuIcons.getResourceId(pendingInbox, -1), true, (Util.pendingInboxCount + "")));
         // Approved Inbox
-        navDrawerItems.add(new NavDrawerItem(navMenuTitles[approvedInbox], navMenuIcons.getResourceId(approvedInbox, -1), true, (Global.approvedInboxCount + "")));
+        navDrawerItems.add(new NavDrawerItem(navMenuTitles[approvedInbox], navMenuIcons.getResourceId(approvedInbox, -1), true, (Util.approvedInboxCount + "")));
         approvedInbox = navDrawerItems.size()-1;
         // Rejected Inbox
-        navDrawerItems.add(new NavDrawerItem(navMenuTitles[rejectedInbox], navMenuIcons.getResourceId(rejectedInbox, -1), true, (Global.rejectedInboxCount + "")));
+        navDrawerItems.add(new NavDrawerItem(navMenuTitles[rejectedInbox], navMenuIcons.getResourceId(rejectedInbox, -1), true, (Util.rejectedInboxCount + "")));
         rejectedInbox = navDrawerItems.size()-1;
 
         // Outbox
         navDrawerItems.add(new NavDrawerItem(navMenuTitles[outbox]));    //unclickable
         unclickableNavDrawerItems.add(navDrawerItems.size()-1);
-        // Waiting Outbox
-        navDrawerItems.add(new NavDrawerItem(navMenuTitles[waitingOutbox], navMenuIcons.getResourceId(waitingOutbox, -1), true, (Global.waitingOutboxCount + "")));
+        // Pending Outbox
+        navDrawerItems.add(new NavDrawerItem(navMenuTitles[pendingOutbox], navMenuIcons.getResourceId(pendingOutbox, -1), true, (Util.pendingOutboxCount + "")));
         // Approved Outbox
-        navDrawerItems.add(new NavDrawerItem(navMenuTitles[approvedOutbox], navMenuIcons.getResourceId(approvedOutbox, -1), true, (Global.approvedOutboxCount + "")));
+        navDrawerItems.add(new NavDrawerItem(navMenuTitles[approvedOutbox], navMenuIcons.getResourceId(approvedOutbox, -1), true, (Util.approvedOutboxCount + "")));
         // Rejected Outbox
-        navDrawerItems.add(new NavDrawerItem(navMenuTitles[rejectedOutbox], navMenuIcons.getResourceId(rejectedOutbox, -1), true, (Global.rejectedOutboxCount + "")));
+        navDrawerItems.add(new NavDrawerItem(navMenuTitles[rejectedOutbox], navMenuIcons.getResourceId(rejectedOutbox, -1), true, (Util.rejectedOutboxCount + "")));
 
 
         // Recycle the typed array
@@ -129,7 +129,7 @@ public class DisplayActivity extends ActionBarActivity {
 
 
         // Setting a customized navigation drawer list adapter
-        Global.drawerAdapter = adapter = new NavDrawerListAdapter(getApplicationContext(), navDrawerItems)
+        Util.drawerAdapter = adapter = new NavDrawerListAdapter(getApplicationContext(), navDrawerItems)
         {
             public boolean areAllItemsEnabled()
             {
@@ -173,10 +173,10 @@ public class DisplayActivity extends ActionBarActivity {
         if (savedInstanceState == null) {
             // on first time display view for first nav item
             if(getIntent().getBooleanExtra("FromDisplayContractToBeApprovedActivity", false)){
-                 displayView(waitingInbox);
+                 displayView(pendingInbox);
             }
             else if(getIntent().getBooleanExtra("FromDisplaySentContractActivity", false)){
-                displayView(waitingOutbox);
+                displayView(pendingOutbox);
 
             }
             else if(getIntent().getBooleanExtra("FromDisplayRejectedContractActivityInbox", false)){
@@ -192,7 +192,7 @@ public class DisplayActivity extends ActionBarActivity {
                 displayView(approvedOutbox);
             }
             else{
-                displayView(waitingInbox);
+                displayView(pendingInbox);
             }
         }
 
@@ -264,10 +264,10 @@ public class DisplayActivity extends ActionBarActivity {
             String type, status;
 
             ArrayList<Contract> contracts = new ArrayList<Contract>();
-            if(position == waitingInbox || position == approvedInbox || position == rejectedInbox){
+            if(position == pendingInbox || position == approvedInbox || position == rejectedInbox){
                 type = "inbox";
-                if(position == waitingInbox){
-                    status = "waiting";
+                if(position == pendingInbox){
+                    status = "pending";
                 }
                 else if(position == approvedInbox){
                     status = "approved";
@@ -279,8 +279,8 @@ public class DisplayActivity extends ActionBarActivity {
             }
             else{
                 type = "outbox";
-                if(position == waitingOutbox){
-                    status = "waiting";
+                if(position == pendingOutbox){
+                    status = "pending";
                 }
                 else if(position == approvedOutbox){
                     status = "approved";
@@ -341,6 +341,14 @@ public class DisplayActivity extends ActionBarActivity {
         super.onConfigurationChanged(newConfig);
         // Pass any configuration change to the drawer toggls
         mDrawerToggle.onConfigurationChanged(newConfig);
+    }
+
+    @Override
+    public void onBackPressed() {
+        Intent backtoHome = new Intent(Intent.ACTION_MAIN);
+        backtoHome.addCategory(Intent.CATEGORY_HOME);
+        backtoHome.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(backtoHome);
     }
 
 }

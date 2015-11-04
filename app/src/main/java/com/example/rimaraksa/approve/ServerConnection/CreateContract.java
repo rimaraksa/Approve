@@ -1,13 +1,13 @@
-package com.example.rimaraksa.approve.DatabaseConnection;
+package com.example.rimaraksa.approve.ServerConnection;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.widget.Toast;
 
 import com.example.rimaraksa.approve.Activity.DisplayActivity;
-import com.example.rimaraksa.approve.Global;
-import com.example.rimaraksa.approve.Model.Account;
+import com.example.rimaraksa.approve.Util;
 import com.example.rimaraksa.approve.Model.NavDrawerItem;
 
 import org.json.JSONException;
@@ -25,12 +25,12 @@ import java.net.URLEncoder;
  */
 public class CreateContract extends AsyncTask<String,Void,String> {
     private Context context;
-    private Account account;
-    private String contractKey, sender, receiver, subject, body, location, status, dateRequest;
+    private Activity activity;
+    private String contractKey, sender_id, receiverUsername, contractSubject, contractBody, location, contractStatus, dateRequest;
 
-    public CreateContract(Context context, Account account) {
+    public CreateContract(Context context, Activity activity) {
         this.context = context;
-        this.account = account;
+        this.activity = activity;
     }
 
     protected void onPreExecute(){
@@ -41,24 +41,23 @@ public class CreateContract extends AsyncTask<String,Void,String> {
     protected String doInBackground(String... arg0) {
         try{
             contractKey = (String)arg0[0];
-            sender = (String)arg0[1];
-            receiver = (String)arg0[2];
-            subject = (String)arg0[3];
-            body = (String)arg0[4];
-            location = (String)arg0[5];
-            status = (String)arg0[6];
-            dateRequest = (String)arg0[7];
+            receiverUsername = (String)arg0[1];
+            contractSubject = (String)arg0[2];
+            contractBody = (String)arg0[3];
+            location = (String)arg0[4];
+            contractStatus = (String)arg0[5];
+            dateRequest = (String)arg0[6];
 
-            System.out.println(contractKey + " + " + sender + " + " + receiver + " + " + subject + " + " + body + " + " + location + " + " + status + " + " + dateRequest);
+            sender_id = Integer.toString(Util.account.getAccount_id());
 
-            String link = Global.linkCreateContract;
+            String link = Util.linkCreateContract;
             String data  = URLEncoder.encode("contractKey", "UTF-8") + "=" + URLEncoder.encode(contractKey, "UTF-8");
-            data  += "&" + URLEncoder.encode("sender", "UTF-8") + "=" + URLEncoder.encode(sender, "UTF-8");
-            data  += "&" + URLEncoder.encode("receiver", "UTF-8") + "=" + URLEncoder.encode(receiver, "UTF-8");
-            data  += "&" + URLEncoder.encode("subject", "UTF-8") + "=" + URLEncoder.encode(subject, "UTF-8");
-            data  += "&" + URLEncoder.encode("body", "UTF-8") + "=" + URLEncoder.encode(body, "UTF-8");
+            data  += "&" + URLEncoder.encode("sender_id", "UTF-8") + "=" + URLEncoder.encode(sender_id, "UTF-8");
+            data  += "&" + URLEncoder.encode("receiverUsername", "UTF-8") + "=" + URLEncoder.encode(receiverUsername, "UTF-8");
+            data  += "&" + URLEncoder.encode("contractSubject", "UTF-8") + "=" + URLEncoder.encode(contractSubject, "UTF-8");
+            data  += "&" + URLEncoder.encode("contractBody", "UTF-8") + "=" + URLEncoder.encode(contractBody, "UTF-8");
             data  += "&" + URLEncoder.encode("location", "UTF-8") + "=" + URLEncoder.encode(location, "UTF-8");
-            data += "&" + URLEncoder.encode("status", "UTF-8") + "=" + URLEncoder.encode(status, "UTF-8");
+            data += "&" + URLEncoder.encode("contractStatus", "UTF-8") + "=" + URLEncoder.encode(contractStatus, "UTF-8");
             data += "&" + URLEncoder.encode("dateRequest", "UTF-8") + "=" + URLEncoder.encode(dateRequest, "UTF-8");
 
             URL url = new URL(link);
@@ -97,25 +96,20 @@ public class CreateContract extends AsyncTask<String,Void,String> {
             JSONObject jsonData = new JSONObject(result);
 
             if(!jsonData.getBoolean("receiver_exists")){
-
-
-                Toast temp = Toast.makeText(context, "Receiver's username does not exist!", Toast.LENGTH_SHORT);
-                temp.show();
+                Util.createContractError(activity, 2);
             }
             else{
-                if(!jsonData.getBoolean("contractKey_available")){
+                if(!jsonData.getBoolean("success")){
                     Toast temp = Toast.makeText(context, "Error during contract creation! Try again!", Toast.LENGTH_SHORT);
                     temp.show();
                     System.out.println("CreateContract contractKey: " + contractKey);
                 }
                 else{
-                    Global.waitingOutboxCount++;
-                    NavDrawerItem navDrawerItem = (NavDrawerItem) Global.drawerAdapter.getItem(6);
-                    navDrawerItem.setCount(Global.waitingOutboxCount + "");
+                    Util.pendingOutboxCount++;
+                    NavDrawerItem navDrawerItem = (NavDrawerItem) Util.drawerAdapter.getItem(Util.pendingOutbox_id);
+                    String pendingOutboxCount = Integer.toString(Util.pendingOutboxCount);
+                    navDrawerItem.setCount(pendingOutboxCount);
                     Intent i = new Intent(context, DisplayActivity.class);
-
-                    i.putExtra("Account", account);
-
                     context.startActivity(i);
                 }
             }

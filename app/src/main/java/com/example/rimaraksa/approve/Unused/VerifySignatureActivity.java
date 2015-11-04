@@ -9,9 +9,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ImageView;
 
-import com.example.rimaraksa.approve.DatabaseConnection.VerifySignature;
-import com.example.rimaraksa.approve.Global;
-import com.example.rimaraksa.approve.Model.Account;
+import com.example.rimaraksa.approve.ServerConnection.VerifySignature;
+import com.example.rimaraksa.approve.Util;
 import com.example.rimaraksa.approve.Model.Contract;
 import com.example.rimaraksa.approve.R;
 
@@ -37,7 +36,7 @@ public class VerifySignatureActivity extends ActionBarActivity {
 
 //        Extract video frame for signature verification - 4 Sept
         videoFrame = getVideoFrame(filePath);
-        signature = Global.accountSignatureBitmap;
+        signature = Util.accountSignatureBitmap;
 
         ivVideoFrame.setImageBitmap(videoFrame);
         ivSignature.setImageBitmap(signature);

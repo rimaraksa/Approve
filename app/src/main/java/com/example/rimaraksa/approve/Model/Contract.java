@@ -1,28 +1,40 @@
 package com.example.rimaraksa.approve.Model;
 
-import com.example.rimaraksa.approve.Global;
+import com.example.rimaraksa.approve.Util;
 
 import java.io.Serializable;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Locale;
 
 /**
  * Created by rimaraksa on 4/6/15.
  */
 public class Contract implements Serializable {
 
-    int contract_id;
-    String contractKey,sender, receiver, subject, body, location, status;
+    int contract_id, sender_id, receiver_id;
+    String contractKey, subject, body, location, status;
     String dateRequest;
     String dateAppOrReject;
     String video;
     String reasonForRejection;
 
-    public Contract(String contractKey, String sender, String receiver, String subject, String body, String location, String status, String dateRequest, String dateAppOrReject, String video, String reasonForRejection) {
+    public Contract(int contract_id, String contractKey, int sender_id, int receiver_id, String subject, String body, String location, String status, String dateRequest, String dateAppOrReject, String video, String reasonForRejection) {
+        this.contract_id = contract_id;
         this.contractKey = contractKey;
-        this.sender = sender;
-        this.receiver = receiver;
+        this.sender_id = sender_id;
+        this.receiver_id = receiver_id;
+        this.subject = subject;
+        this.body = body;
+        this.location = location;
+        this.status = status;
+        this.dateRequest = dateRequest;
+        this.dateAppOrReject = dateAppOrReject;
+        this.video = video;
+        this.reasonForRejection = reasonForRejection;
+    }
+
+    public Contract(String contractKey, int sender_id, int receiver_id, String subject, String body, String location, String status, String dateRequest, String dateAppOrReject, String video, String reasonForRejection) {
+        this.contractKey = contractKey;
+        this.sender_id = sender_id;
+        this.receiver_id = receiver_id;
         this.subject = subject;
         this.body = body;
         this.location = location;
@@ -49,20 +61,20 @@ public class Contract implements Serializable {
         return contract_id;
     }
 
-    public void setSender(String sender){
-        this.sender = sender;
+    public void setSender_id(int sender_id){
+        this.sender_id = sender_id;
     }
 
-    public String getSender(){
-        return sender;
+    public int getSender_id(){
+        return sender_id;
     }
     
-    public void setReceiver(String receiver){
-        this.receiver = receiver;
+    public void setReceiver_id(int receiver){
+        this.receiver_id = receiver_id;
     }
 
-    public String getReceiver(){
-        return receiver;
+    public int getReceiver_id(){
+        return receiver_id;
     }
 
     public void setSubject(String subject){
@@ -92,8 +104,8 @@ public class Contract implements Serializable {
     public void setStatus(String status){
         this.status = status;
 
-        if(!status.equals("waiting")){
-            setDateAppOrReject(Global.getDateTime());
+        if(!status.equals("pending")){
+            setDateAppOrReject(Util.getDateTime());
         }
     }
 

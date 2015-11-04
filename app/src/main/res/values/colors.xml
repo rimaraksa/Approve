@@ -27,11 +27,15 @@
     <color name="text_white">#FFFFFF</color>
     <color name="text_grey">#9E9E9E</color>
     <color name="text_black">#000000</color>
+    <color name="text_red">#B71C1C</color>
 
     <color name="selected">#E0E0E0</color>
     <color name="reject">#B71C1C</color>
     <color name="link">#0000EE</color>
     <color name="divider">#B5B5B5</color>
+
+    <color name="theme_red">#B71C1C</color>
+    <color name="theme_red_2">#EF9A9A</color>
 
 
 

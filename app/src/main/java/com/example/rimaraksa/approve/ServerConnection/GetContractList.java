@@ -1,4 +1,4 @@
-package com.example.rimaraksa.approve.DatabaseConnection;
+package com.example.rimaraksa.approve.ServerConnection;
 
 import android.app.Activity;
 import android.content.Context;
@@ -17,7 +17,7 @@ import com.example.rimaraksa.approve.Activity.DisplayContractToBeApprovedActivit
 import com.example.rimaraksa.approve.Activity.DisplayRejectedContractActivity;
 import com.example.rimaraksa.approve.Activity.DisplaySentContractActivity;
 import com.example.rimaraksa.approve.Adapter.ContractAdapter;
-import com.example.rimaraksa.approve.Global;
+import com.example.rimaraksa.approve.Util;
 import com.example.rimaraksa.approve.Model.Contract;
 
 import org.json.JSONArray;
@@ -36,15 +36,16 @@ import java.util.Locale;
 /**
  * Created by rimaraksa on 15/6/15.
  */
-public class DisplayContractList extends AsyncTask<String,Void,String> {
+public class GetContractList extends AsyncTask<String,Void,String> {
     private Context context;
     private Activity activity;
     private ArrayList<Contract> contracts = new ArrayList<Contract>();
     private ArrayList<Bitmap> profpics = new ArrayList<Bitmap>();
     private ArrayList<String> namesTarget = new ArrayList<String>();
+    private ArrayList<String> usernamesTarget = new ArrayList<String>();
     private ArrayList<String> phonesTarget = new ArrayList<String>();
     private String account_id;
-    private String role, target, status;
+    private String role, target, contractStatus;
 
     private ListView lvContractList;
 
@@ -53,7 +54,7 @@ public class DisplayContractList extends AsyncTask<String,Void,String> {
 
 
 
-    public DisplayContractList(Context context, Activity activity, ListView lvContractList, EditText tfSearchContract) {
+    public GetContractList(Context context, Activity activity, ListView lvContractList, EditText tfSearchContract) {
         this.context = context;
         this.activity = activity;
         this.lvContractList = lvContractList;
@@ -69,17 +70,16 @@ public class DisplayContractList extends AsyncTask<String,Void,String> {
     @Override
     protected String doInBackground(String... arg0) {
         try{
-            account_id = (String)arg0[0];
-            role = (String)arg0[1];
-            target = (String)arg0[2];
-            status = (String)arg0[3];
+            role = (String)arg0[0];
+            target = (String)arg0[1];
+            contractStatus = (String)arg0[2];
 
-            System.out.println("DISPLAY: " + account_id + role + target + status);
-            String link = Global.linkDisplayContractList;
+            account_id = Integer.toString(Util.account.getAccount_id());
+            String link = Util.linkDisplayContractList;
             String data  = URLEncoder.encode("account_id", "UTF-8") + "=" + URLEncoder.encode(account_id, "UTF-8");
             data  += "&" + URLEncoder.encode("role", "UTF-8") + "=" + URLEncoder.encode(role, "UTF-8");
             data  += "&" + URLEncoder.encode("target", "UTF-8") + "=" + URLEncoder.encode(target, "UTF-8");
-            data  += "&" + URLEncoder.encode("status", "UTF-8") + "=" + URLEncoder.encode(status, "UTF-8");
+            data  += "&" + URLEncoder.encode("contractStatus", "UTF-8") + "=" + URLEncoder.encode(contractStatus, "UTF-8");
 
 
             URL url = new URL(link);
@@ -117,26 +117,30 @@ public class DisplayContractList extends AsyncTask<String,Void,String> {
             JSONArray jsonArray = new JSONArray(result);
             for (int i = 0; i < jsonArray.length(); i++) {
                 JSONObject jsonData = jsonArray.getJSONObject(i);
+                int contract_id = jsonData.getInt("contract_id");
                 String contractKey = jsonData.getString("contractKey");
-                String sender = jsonData.getString("sender");
-                String receiver = jsonData.getString("receiver");
-                String subject = jsonData.getString("subject");
-                String body = jsonData.getString("body");
+                int sender_id = jsonData.getInt("sender_id");
+                int receiver_id = jsonData.getInt("receiver_id");
+                String contractSubject = jsonData.getString("contractSubject");
+                String contractBody = jsonData.getString("contractBody");
                 String location = jsonData.getString("location");
-                String status = jsonData.getString("status");
+                String contractStatus = jsonData.getString("contractStatus");
                 String dateRequest = jsonData.getString("dateRequest");
                 String dateAppOrReject = jsonData.getString("dateAppOrReject");
-                String video = jsonData.getString("video");
+                String videoApproval = jsonData.getString("videoApproval");
                 String reasonForRejection = jsonData.getString("reasonForRejection");
-                Contract contract = new Contract(contractKey, sender, receiver, subject, body, location, status, dateRequest, dateAppOrReject, video, reasonForRejection);
+                Contract contract = new Contract(contract_id, contractKey, sender_id, receiver_id, contractSubject, contractBody, location, contractStatus, dateRequest, dateAppOrReject, videoApproval, reasonForRejection);
                 contracts.add(0, contract);
 
                 String encodedProfpicTarget = jsonData.getString("encodedProfpicTarget");
-                Bitmap bitmap = Global.stringToBitmap(encodedProfpicTarget);
+                Bitmap bitmap = Util.stringToBitmap(encodedProfpicTarget);
                 profpics.add(0, bitmap);
 
                 String nameTarget = jsonData.getString(target + "Name");
                 namesTarget.add(0, nameTarget);
+
+                String usernameTarget = jsonData.getString( target + "Username");
+                usernamesTarget.add(0, usernameTarget);
 
                 String phoneTarget = jsonData.getString(target + "Phone");
                 phonesTarget.add(0, phoneTarget);
@@ -158,7 +162,7 @@ public class DisplayContractList extends AsyncTask<String,Void,String> {
 
     private void populateLVContract() {
         //build adapter
-        adapter = new ContractAdapter(context, activity, contracts, profpics, namesTarget, phonesTarget, role);
+        adapter = new ContractAdapter(context, activity, contracts, profpics, namesTarget, usernamesTarget, phonesTarget, role);
         //configure list view
         lvContractList.setAdapter(adapter);
 
@@ -192,23 +196,27 @@ public class DisplayContractList extends AsyncTask<String,Void,String> {
                 Contract contract = contracts.get(position);
                 Bitmap profpic = profpics.get(position);
                 String targetName = namesTarget.get(position);
+                String targetUsername = usernamesTarget.get(position);
                 String targetPhone = phonesTarget.get(position);
 
-                System.out.println("size: " + contracts.size() + " " + profpics.size() + " " + namesTarget.size() + " " + phonesTarget.size());
+                System.out.println("size: " + contracts.size() + " " + profpics.size() + " " + namesTarget.size() + " " + usernamesTarget.size() + " " + phonesTarget.size());
                 Intent i;
-                if (contract.getStatus().equals("waiting")) {
+                if (contract.getStatus().equals("pending")) {
                     if (role.equals("receiver")) {
                         i = new Intent(activity, DisplayContractToBeApprovedActivity.class);
                         i.putExtra("Contract", contract);
                         i.putExtra("SenderProfpic", profpic);
                         i.putExtra("SenderName", targetName);
+                        i.putExtra("SenderUsername", targetUsername);
                         i.putExtra("SenderPhone", targetPhone);
                         activity.startActivity(i);
 
-                    } else {
+                    }
+                    else {
                         i = new Intent(activity, DisplaySentContractActivity.class);
                         i.putExtra("Contract", contract);
                         i.putExtra("ReceiverName", targetName);
+                        i.putExtra("ReceiverUsername", targetUsername);
                         i.putExtra("ReceiverPhone", targetPhone);
                         activity.startActivity(i);
 
@@ -218,6 +226,7 @@ public class DisplayContractList extends AsyncTask<String,Void,String> {
                     i.putExtra("Contract", contract);
                     i.putExtra("TargetProfpic", profpic);
                     i.putExtra("TargetName", targetName);
+                    i.putExtra("TargetUsername", targetUsername);
                     i.putExtra("Role", role);
                     activity.startActivity(i);
                 } else {
@@ -225,6 +234,7 @@ public class DisplayContractList extends AsyncTask<String,Void,String> {
                     i.putExtra("Contract", contract);
                     i.putExtra("TargetProfpic", profpic);
                     i.putExtra("TargetName", targetName);
+                    i.putExtra("TargetUsername", targetUsername);
                     i.putExtra("Role", role);
                     activity.startActivity(i);
                 }

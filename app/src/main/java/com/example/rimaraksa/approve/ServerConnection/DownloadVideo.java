@@ -1,4 +1,4 @@
-package com.example.rimaraksa.approve.DatabaseConnection;
+package com.example.rimaraksa.approve.ServerConnection;
 
 import android.content.Context;
 import android.content.Intent;
@@ -10,7 +10,7 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.rimaraksa.approve.Global;
+import com.example.rimaraksa.approve.Util;
 import com.example.rimaraksa.approve.Model.Contract;
 
 import java.io.BufferedInputStream;
@@ -49,19 +49,19 @@ public class DownloadVideo extends AsyncTask<String,Void,String> {
         fileName = contract.getVideo();
 
         try{
-            String link = Global.link + targetPath + fileName;
+            String link = Util.link + targetPath + fileName;
 
 
             URL url = new URL(link);
             URLConnection conn = url.openConnection();
 
             //Determine how long it takes for the app to realize a connection problem
-            conn.setReadTimeout(Global.TIMEOUT_CONNECTION);
-            conn.setConnectTimeout(Global.TIMEOUT_SOCKET);
+            conn.setReadTimeout(Util.TIMEOUT_CONNECTION);
+            conn.setConnectTimeout(Util.TIMEOUT_SOCKET);
 
             //Create the file
             File file;
-            file = Global.getOutputMediaFile(Global.MEDIA_TYPE_VIDEO, contract.getContractKey());
+            file = Util.getOutputMediaFile(Util.MEDIA_TYPE_VIDEO, contract.getContractKey());
 
             fileUri = fileUri.fromFile(file);
 

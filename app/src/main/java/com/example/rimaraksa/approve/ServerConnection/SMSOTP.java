@@ -1,38 +1,22 @@
-package com.example.rimaraksa.approve.DatabaseConnection;
+package com.example.rimaraksa.approve.ServerConnection;
 
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.ProgressDialog;
 import android.content.Context;
-import android.content.Intent;
-import android.graphics.Bitmap;
 import android.os.AsyncTask;
-import android.util.Base64;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.example.rimaraksa.approve.Activity.DisplayActivity;
-import com.example.rimaraksa.approve.Global;
+import com.example.rimaraksa.approve.Util;
 import com.example.rimaraksa.approve.Model.Contract;
 import com.example.rimaraksa.approve.R;
 
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
-import org.apache.http.client.ClientProtocolException;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.entity.mime.MultipartEntity;
-import org.apache.http.entity.mime.content.StringBody;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.util.EntityUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.net.URL;
@@ -67,11 +51,11 @@ public class SMSOTP extends AsyncTask<String,Void,String> {
     protected String doInBackground(String... arg0) {
         try{
             filePath = (String)arg0[0];
-            otp = Global.generateOTP();
+            otp = Util.generateOTP();
             System.out.println("OTP: " + otp);
-            String link = Global.linkSMSOTP;
-            String data  = URLEncoder.encode("name", "UTF-8") + "=" + URLEncoder.encode(Global.account.getName(), "UTF-8");
-            data += "&" + URLEncoder.encode("phone", "UTF-8") + "=" + URLEncoder.encode(Global.account.getPhone(), "UTF-8");
+            String link = Util.linkSMSOTP;
+            String data  = URLEncoder.encode("name", "UTF-8") + "=" + URLEncoder.encode(Util.account.getName(), "UTF-8");
+            data += "&" + URLEncoder.encode("phone", "UTF-8") + "=" + URLEncoder.encode(Util.account.getPhone(), "UTF-8");
             data += "&" + URLEncoder.encode("otp", "UTF-8") + "=" + URLEncoder.encode(otp, "UTF-8");
 
             URL url = new URL(link);
@@ -96,7 +80,6 @@ public class SMSOTP extends AsyncTask<String,Void,String> {
             }
             return sb.toString();
 
-
         }
         catch(Exception e){
             return new String("Exception on SMS OTP 1: " + e.getMessage());
@@ -112,8 +95,8 @@ public class SMSOTP extends AsyncTask<String,Void,String> {
             JSONObject jsonData = new JSONObject(result);
 
             if (!jsonData.getBoolean("smsOTPSuccess")) {
-//                Toast pass = Toast.makeText(context, "ERROR: " + jsonData.getString("message"), Toast.LENGTH_SHORT);
-//                pass.show();
+                Toast pass = Toast.makeText(context, "ERROR: " + jsonData.getString("message"), Toast.LENGTH_SHORT);
+                pass.show();
             }
             else {
                 popOTPDialog();
@@ -153,15 +136,16 @@ public class SMSOTP extends AsyncTask<String,Void,String> {
                 confirmOTP = tfConfirmOTP.getText().toString();
 
                 if(confirmOTP.equals("")){
-                    Global.inputOTPError(activity, 0);
+                    Util.inputOTPError(activity, 0);
                 }
                 else if (!confirmOTP.equals(otp)) {
-                    Global.inputOTPError(activity, 1);
+                    Util.inputOTPError(activity, 1);
 
                 }
                 else {
                     ad.dismiss();
-                    new UploadFileToServer(context, activity).execute(contract.getContractKey(), "video", filePath);
+                    System.out.println("Filepath on SMSOTP: " + filePath);
+                    new UploadFile(context, activity, contract).execute(contract.getContractKey(), "video", filePath);
                 }
             }
         });

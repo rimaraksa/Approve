@@ -13,7 +13,7 @@ import android.view.MenuItem;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.example.rimaraksa.approve.Global;
+import com.example.rimaraksa.approve.Util;
 import com.example.rimaraksa.approve.Model.Contract;
 import com.example.rimaraksa.approve.R;
 
@@ -24,7 +24,7 @@ public class DisplayRejectedContractActivity extends ActionBarActivity {
     private Toolbar mToolbar;
 
     private Contract contract;
-    private String role, senderName, receiverName, box;
+    private String role, senderName, senderUsername, receiverName, receiverUsername, box;
     private Bitmap senderProfpic;
 
     private ImageView ivProfileSender;
@@ -56,15 +56,19 @@ public class DisplayRejectedContractActivity extends ActionBarActivity {
         tvReasonForRejection = (TextView) findViewById(R.id.TVReasonForRejection);
 
         if(role.equals("sender")){
-            senderName = Global.account.getName();
-            senderProfpic = Global.accountProfpicBitmap;
+            senderName = Util.account.getName();
+            senderUsername = Util.account.getUsername();
+            senderProfpic = Util.accountProfpicBitmap;
             receiverName = (String) getIntent().getExtras().getString("TargetName");
+            receiverUsername = (String) getIntent().getExtras().getString("TargetUsername");
             box = "Outbox";
         }
         else{
             senderName = (String) getIntent().getExtras().getString("TargetName");
+            senderUsername = (String) getIntent().getExtras().getString("TargetUsername");
             senderProfpic = (Bitmap) getIntent().getParcelableExtra("TargetProfpic");
-            receiverName = Global.account.getName();
+            receiverName = Util.account.getName();
+            receiverUsername = Util.account.getUsername();
             box = "Inbox";
         }
 
@@ -72,17 +76,17 @@ public class DisplayRejectedContractActivity extends ActionBarActivity {
 
         ivProfileSender.setImageBitmap(senderProfpic);
         tvSenderName.setText(senderName);
-        tvSenderUsername.setText(contract.getSender());
-        tvReceiver.setText(receiverName + " [" + contract.getReceiver() + "]");
+        tvSenderUsername.setText(senderUsername);
+        tvReceiver.setText(receiverName + " [" + receiverUsername + "]");
         tvSubject.setText(contract.getSubject() + " [Rejected]");
         tvBody.setText(contract.getBody());
-        tvRequestedDate.setText(Global.getTimeDetailToDisplayFromDateTime(contract.getDateRequest()));
-        tvRejectedDate.setText(Global.getTimeDetailToDisplayFromDateTime(contract.getDateAppOrReject()));
+        tvRequestedDate.setText(Util.getTimeDetailToDisplayFromDateTime(contract.getDateRequest()));
+        tvRejectedDate.setText(Util.getTimeDetailToDisplayFromDateTime(contract.getDateAppOrReject()));
         tvReasonForRejection.setText(contract.getReasonForRejection());
 
 
         try {
-            tvLocation.setText(Global.latLongToCity(DisplayRejectedContractActivity.this, contract.getLocation()));
+            tvLocation.setText(Util.latLongToCity(DisplayRejectedContractActivity.this, contract.getLocation()));
         }
         catch (IOException e) {
             e.printStackTrace();

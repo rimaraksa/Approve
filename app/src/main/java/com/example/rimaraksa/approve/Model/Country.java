@@ -1,7 +1,5 @@
 package com.example.rimaraksa.approve.Model;
 
-import com.example.rimaraksa.approve.Global;
-
 import java.io.Serializable;
 
 /**

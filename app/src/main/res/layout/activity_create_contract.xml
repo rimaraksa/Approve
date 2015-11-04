@@ -30,7 +30,7 @@
             <EditText
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:id="@+id/TFReceiver" />
+                android:id="@+id/TFReceiverUsername" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -42,7 +42,7 @@
             <EditText
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:id="@+id/TFSubject"/>
+                android:id="@+id/TFContractSubject"/>
 
             <TextView
                 android:layout_width="wrap_content"

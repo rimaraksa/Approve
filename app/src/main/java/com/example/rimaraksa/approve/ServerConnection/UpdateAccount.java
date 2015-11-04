@@ -1,13 +1,11 @@
-package com.example.rimaraksa.approve.DatabaseConnection;
+package com.example.rimaraksa.approve.ServerConnection;
 
 import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
 import android.os.AsyncTask;
 import android.widget.Toast;
 
-import com.example.rimaraksa.approve.Activity.DisplayActivity;
-import com.example.rimaraksa.approve.Global;
+import com.example.rimaraksa.approve.Util;
 import com.example.rimaraksa.approve.Model.Account;
 
 import org.json.JSONException;
@@ -46,8 +44,8 @@ public class UpdateAccount extends AsyncTask<String,Void,String> {
             column = (String)arg0[0];
             content = (String)arg0[1];
 
-            String link = Global.linkUpdateAccount;
-            String data  = URLEncoder.encode("username", "UTF-8") + "=" + URLEncoder.encode(Global.account.getUsername(), "UTF-8");
+            String link = Util.linkUpdateAccount;
+            String data  = URLEncoder.encode("username", "UTF-8") + "=" + URLEncoder.encode(Util.account.getUsername(), "UTF-8");
             data  += "&" + URLEncoder.encode("column", "UTF-8") + "=" + URLEncoder.encode(column, "UTF-8");
             data  += "&" + URLEncoder.encode("content", "UTF-8") + "=" + URLEncoder.encode(content, "UTF-8");
 

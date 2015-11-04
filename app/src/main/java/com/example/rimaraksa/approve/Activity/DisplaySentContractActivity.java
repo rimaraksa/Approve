@@ -19,7 +19,7 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.example.rimaraksa.approve.Global;
+import com.example.rimaraksa.approve.Util;
 import com.example.rimaraksa.approve.Model.Contract;
 import com.example.rimaraksa.approve.R;
 
@@ -30,7 +30,7 @@ public class DisplaySentContractActivity extends ActionBarActivity {
     private Toolbar mToolbar;
 
     private Contract contract;
-    private String receiverName, receiverPhone;
+    private String receiverName, receiverUsername, receiverPhone;
     private ImageView ivProfileSender;
     private TextView tvSenderName, tvSenderUsername, tvReceiver, tvSubject, tvBody, tvDate, tvLocation;
 
@@ -46,10 +46,11 @@ public class DisplaySentContractActivity extends ActionBarActivity {
         mToolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(mToolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setTitle("Waiting Outbox");
+        getSupportActionBar().setTitle("Pending Outbox");
 
         contract = (Contract) getIntent().getSerializableExtra("Contract");
         receiverName = (String) getIntent().getExtras().getString("ReceiverName");
+        receiverUsername = (String) getIntent().getExtras().getString("ReceiverUsername");
         receiverPhone = (String) getIntent().getExtras().getString("ReceiverPhone");
 
         ivProfileSender = (ImageView) findViewById(R.id.IVProfileSender);
@@ -63,18 +64,18 @@ public class DisplaySentContractActivity extends ActionBarActivity {
         tvContact = (TextView) findViewById(R.id.TVContact);
 
 
-        ivProfileSender.setImageBitmap(Global.accountProfpicBitmap);
-        tvSenderName.setText(Global.account.getName());
-        tvSenderUsername.setText(Global.account.getUsername());
-        tvReceiver.setText(receiverName + " [" + contract.getReceiver() + "]");
+        ivProfileSender.setImageBitmap(Util.accountProfpicBitmap);
+        tvSenderName.setText(Util.account.getName());
+        tvSenderUsername.setText(Util.account.getUsername());
+        tvReceiver.setText(receiverName + " [" + receiverUsername + "]");
         tvSubject.setText(contract.getSubject());
         tvBody.setText(contract.getBody());
-        tvDate.setText(Global.getTimeDetailToDisplayFromDateTime(contract.getDateRequest()));
+        tvDate.setText(Util.getTimeDetailToDisplayFromDateTime(contract.getDateRequest()));
 
 
 
         try {
-            tvLocation.setText(Global.latLongToCity(DisplaySentContractActivity.this, contract.getLocation()));
+            tvLocation.setText(Util.latLongToCity(DisplaySentContractActivity.this, contract.getLocation()));
         }
         catch (IOException e) {
             e.printStackTrace();

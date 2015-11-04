@@ -1,4 +1,4 @@
-package com.example.rimaraksa.approve.DatabaseConnection;
+package com.example.rimaraksa.approve.ServerConnection;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
@@ -15,14 +15,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.AsyncTask;
-import android.view.View;
-import android.widget.Toast;
 
 import com.example.rimaraksa.approve.Activity.DisplayActivity;
-import com.example.rimaraksa.approve.Activity.LoginActivity;
-import com.example.rimaraksa.approve.Global;
+import com.example.rimaraksa.approve.Util;
 import com.example.rimaraksa.approve.Model.Account;
-import com.example.rimaraksa.approve.R;
 
 /**
  * Created by rimaraksa on 11/6/15.
@@ -55,7 +51,7 @@ public class Login extends AsyncTask<String,Void,String> {
             username = (String)arg0[0];
             password = (String)arg0[1];
 
-            String link = Global.linkLogin;
+            String link = Util.linkLogin;
             String data  = URLEncoder.encode("username", "UTF-8") + "=" + URLEncoder.encode(username, "UTF-8");
             data += "&" + URLEncoder.encode("password", "UTF-8") + "=" + URLEncoder.encode(password, "UTF-8");
 
@@ -96,7 +92,7 @@ public class Login extends AsyncTask<String,Void,String> {
         try{
             JSONObject jsonData = new JSONObject(result);
 
-            if(jsonData.getInt("success") == 1){
+            if(jsonData.getBoolean("success")){
 
                 int account_id = jsonData.getInt("account_id");
                 String name = jsonData.getString("name");
@@ -106,30 +102,26 @@ public class Login extends AsyncTask<String,Void,String> {
                 String signature = jsonData.getString("signature");
 
 
-                Account account = new Account(name, nric, phone, username, password, profpic, signature);
-                account.setAccount_id(account_id);
+                Account account = new Account(account_id, name, nric, phone, username, password, profpic, signature);
 
-                Global.account = account;
+                Util.account = account;
 
                 String encodedProfpic = jsonData.getString("encodedProfpic");
-                Global.accountProfpicBitmap = Global.stringToBitmap(encodedProfpic);
+                Util.accountProfpicBitmap = Util.stringToBitmap(encodedProfpic);
 
-                String encodedSignature = jsonData.getString("encodedSignature");
-                Global.accountSignatureBitmap = Global.stringToBitmap(encodedSignature);
+                Util.pendingInboxCount = jsonData.getInt("pendingInbox");
+                Util.approvedInboxCount = jsonData.getInt("approvedInbox");
+                Util.rejectedInboxCount = jsonData.getInt("rejectedInbox");
 
-                Global.waitingInboxCount = jsonData.getInt("waitingInbox");
-                Global.approvedInboxCount = jsonData.getInt("approvedInbox");
-                Global.rejectedInboxCount = jsonData.getInt("rejectedInbox");
-
-                Global.waitingOutboxCount = jsonData.getInt("waitingOutbox");
-                Global.approvedOutboxCount = jsonData.getInt("approvedOutbox");
-                Global.rejectedOutboxCount = jsonData.getInt("rejectedOutbox");
+                Util.pendingOutboxCount = jsonData.getInt("pendingOutbox");
+                Util.approvedOutboxCount = jsonData.getInt("approvedOutbox");
+                Util.rejectedOutboxCount = jsonData.getInt("rejectedOutbox");
 
                 Intent i = new Intent(context, DisplayActivity.class);
                 context.startActivity(i);
             }
             else{
-                Global.loginError(activity, 1);
+                Util.loginError(activity, 1);
 //                Toast temp = Toast.makeText(context, "Incorrect username or password!", Toast.LENGTH_SHORT);
 //                temp.show();
             }

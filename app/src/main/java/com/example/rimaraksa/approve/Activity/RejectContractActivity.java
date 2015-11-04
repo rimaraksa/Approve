@@ -8,17 +8,14 @@ import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.example.rimaraksa.approve.Global;
-import com.example.rimaraksa.approve.Model.Account;
+import com.example.rimaraksa.approve.Util;
 import com.example.rimaraksa.approve.Model.Contract;
 import com.example.rimaraksa.approve.R;
-import com.example.rimaraksa.approve.DatabaseConnection.RejectContract;
+import com.example.rimaraksa.approve.ServerConnection.RejectContract;
 
 import java.io.IOException;
 
@@ -28,7 +25,7 @@ public class RejectContractActivity extends ActionBarActivity {
     private Toolbar mToolbar;
 
     private Contract contract;
-    private String role, senderName, receiverName, box;
+    private String role, senderName, senderUsername, receiverName, box;
     private Bitmap senderProfpic;
 
     private ImageView ivProfileSender;
@@ -53,6 +50,7 @@ public class RejectContractActivity extends ActionBarActivity {
         contract = (Contract) getIntent().getSerializableExtra("Contract");
         senderProfpic = (Bitmap) getIntent().getParcelableExtra("SenderProfpic");
         senderName = (String) getIntent().getExtras().getString("SenderName");
+        senderUsername = (String) getIntent().getExtras().getString("SenderUsername");
 
         contract = (Contract) getIntent().getSerializableExtra("Contract");
 
@@ -68,14 +66,14 @@ public class RejectContractActivity extends ActionBarActivity {
 
         ivProfileSender.setImageBitmap(senderProfpic);
         tvSenderName.setText(senderName);
-        tvSenderUsername.setText(contract.getSender());
-        tvReceiver.setText(Global.account.getName() + " [" + Global.account.getUsername() + "]");
+        tvSenderUsername.setText(senderUsername);
+        tvReceiver.setText(Util.account.getName() + " [" + Util.account.getUsername() + "]");
         tvSubject.setText("Rejecting: " + contract.getSubject());
         tvBody.setText(contract.getBody());
-        tvRequestedDate.setText(Global.getTimeDetailToDisplayFromDateTime(contract.getDateRequest()));
+        tvRequestedDate.setText(Util.getTimeDetailToDisplayFromDateTime(contract.getDateRequest()));
 
         try {
-            tvLocation.setText(Global.latLongToCity(RejectContractActivity.this, contract.getLocation()));
+            tvLocation.setText(Util.latLongToCity(RejectContractActivity.this, contract.getLocation()));
         }
         catch (IOException e) {
             e.printStackTrace();
@@ -118,7 +116,7 @@ public class RejectContractActivity extends ActionBarActivity {
 
         if (reasonForRejection.equals("")) {
             //popup message
-            Global.rejectError(activity, 0);
+            Util.rejectError(activity, 0);
         } else {
             new RejectContract(this, activity, contract).execute(reasonForRejection);
         }

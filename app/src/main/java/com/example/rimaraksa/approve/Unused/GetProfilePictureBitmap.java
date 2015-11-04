@@ -1,11 +1,11 @@
-package com.example.rimaraksa.approve.DatabaseConnection;
+package com.example.rimaraksa.approve.Unused;
 
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.AsyncTask;
 
-import com.example.rimaraksa.approve.Global;
+import com.example.rimaraksa.approve.Util;
 import com.example.rimaraksa.approve.Model.Account;
 import com.example.rimaraksa.approve.Model.Contract;
 
@@ -44,7 +44,7 @@ public class GetProfilePictureBitmap extends AsyncTask<String,Void,String> {
             targetPath = (String) arg0[0];
             fileName = (String) arg0[1];
 
-            String link = Global.link + targetPath + fileName;
+            String link = Util.link + targetPath + fileName;
 
             try{
                 URL url = new URL(link);
@@ -52,8 +52,8 @@ public class GetProfilePictureBitmap extends AsyncTask<String,Void,String> {
                 System.out.println("buffString1 ");
 
                 //Determine how long it takes for the app to realize a connection problem
-                conn.setReadTimeout(Global.TIMEOUT_CONNECTION);
-                conn.setConnectTimeout(Global.TIMEOUT_SOCKET);
+                conn.setReadTimeout(Util.TIMEOUT_CONNECTION);
+                conn.setConnectTimeout(Util.TIMEOUT_SOCKET);
 
                 System.out.println("buffString2 ");
 
